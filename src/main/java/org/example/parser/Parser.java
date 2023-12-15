@@ -2,6 +2,7 @@ package org.example.parser;
 
 import org.example.domain.Token;
 import org.example.domain.TokenType;
+import org.example.domain.TokenTypeGroup;
 import org.example.parser.context.ParseTree;
 import org.example.parser.context.ProgramContext;
 import org.example.parser.context.implementation.*;
@@ -33,7 +34,7 @@ public class Parser {
 
         Token token = scanner.getCurrentToken();
 
-        if (token.getType() == TokenType.LET) {
+        if (token.getType() == TokenType.LET || token.getType() == TokenType.TEXT) {
             return new StatementContext(parseLet(), null, null);
         } else if (token.getType() == TokenType.SHOW) {
             return new StatementContext(null, parseShow(), null);
@@ -55,8 +56,8 @@ public class Parser {
         TerminalNode terminal = parseTerminalNode(); // VAR | INT
         final Token token = (Token) terminal.getPayload();
 
-        if (token.getType() == TokenType.NUMBER) {
-            return new ShowContext(terminal, null, null, null);
+        if (token.getType() == TokenType.NUMBER || token.getType() == TokenType.LEFT_PARENTHESIS || token.getType() == TokenType.TEXT) {
+            return new ShowContext(null, null, null, parseExpressionContext());
         } else if (token.getType().equals(TokenType.QUOTE)) {
             scanner.nextToken();
             terminal = parseTerminalNode();
@@ -64,11 +65,6 @@ public class Parser {
             return new ShowContext(null, null, terminal, null);
         } else if (token.getType() == TokenType.TEXT) {
             return new ShowContext(null, terminal, null, null);
-        } else if (token.getType() == TokenType.LEFT_PARENTHESIS) {
-            ShowContext showContext = new ShowContext(null, null, null, parseExpressionContext());
-            scanner.nextToken(); //move to closing parenthesis
-            isTokenExpected(TokenType.RIGHT_PARENTHESIS);
-            return showContext;
         } else {
             throw new RuntimeException("Show not preceded with variable, string or expression");
         }
@@ -79,8 +75,8 @@ public class Parser {
         TerminalNode variableNameToken = parseTerminalNode(); // VAR
         scanner.nextToken();
         scanner.nextToken();
-        if(scanner.getCurrentToken().getType() == TokenType.LEFT_PARENTHESIS) {
-            ExpressionContext expressionContext = parseExpressionContext();
+        if(scanner.getCurrentToken().getType() == TokenType.NUMBER || scanner.getCurrentToken().getType() == TokenType.LEFT_PARENTHESIS) {
+            ParseTree expressionContext = parseExpressionContext();
             return new LetContext(variableNameToken, expressionContext);
         }
 
@@ -92,14 +88,17 @@ public class Parser {
     public IfStatementContext parseIfStatement() {
         isTokenExpected(TokenType.IF);
         scanner.nextToken();
-        ExpressionContext condition = parseExpressionContext();
+        scanner.nextToken();
+        ParseTree condition = parseExpressionContext();
         scanner.nextToken();
         scanner.nextToken();
 
         isTokenExpected(TokenType.OPEN_BRACE);
         scanner.nextToken();
         StatementContext ifStatement = parseStatement();
-        scanner.nextToken();
+        while(scanner.getCurrentToken() != TokenType.CLOSE_BRACE) {
+
+        }
         isTokenExpected(TokenType.CLOSE_BRACE);
         scanner.nextToken();
 
@@ -127,12 +126,11 @@ public class Parser {
         return token;
     }
 
-    public ExpressionContext parseExpressionContext() {
-        return (ExpressionContext) parseExpression();
+    public ParseTree parseExpressionContext() {
+        return parseExpression();
     }
 
     private ParseTree parseExpression() {
-        scanner.nextToken();
         ParseTree left = parseTerm();
 
         while (isAdditionOrSubtraction() || isEquality()) {
@@ -169,9 +167,12 @@ public class Parser {
         Token currentToken = scanner.getCurrentToken();
 
         if (currentToken.getType() == TokenType.NUMBER || currentToken.getType() == TokenType.TEXT) {
-            scanner.nextToken(); // Consume the number
+            if(scanner.getLookAheadToken().getType().getGroup() == TokenTypeGroup.OPERATOR || scanner.getLookAheadToken().getType().getGroup() == TokenTypeGroup.DELIMITER) {
+                scanner.nextToken(); // Consume the number
+            }
             return new ExpressionNode(currentToken);
         } else if (currentToken.getType() == TokenType.LEFT_PARENTHESIS) {
+            scanner.nextToken();
             ParseTree expression = parseExpression();
             if (scanner.getCurrentToken().getType() != TokenType.RIGHT_PARENTHESIS) {
                 throw new RuntimeException("Expected ')' at index " + scanner.getCurrentIndex());

@@ -1,15 +1,16 @@
 package org.example.parser.context.implementation;
 
+import org.example.parser.context.ParseTree;
 import org.example.parser.context.ParserRuleContext;
 import org.example.visitor.Visitor;
 
 public class IfStatementContext extends ParserRuleContext {
 
-    private final ExpressionContext condition;
+    private final ParseTree condition;
     private final StatementContext ifStatement;
     private final StatementContext elseStatement;
 
-    public IfStatementContext(ExpressionContext condition, StatementContext ifStatement, StatementContext elseStatement) {
+    public IfStatementContext(ParseTree condition, StatementContext ifStatement, StatementContext elseStatement) {
         this.condition = condition;
         this.ifStatement = ifStatement;
         this.elseStatement = elseStatement;
@@ -22,7 +23,7 @@ public class IfStatementContext extends ParserRuleContext {
         }
     }
 
-    public ExpressionContext getCondition() {
+    public ParseTree getCondition() {
         return condition;
     }
 

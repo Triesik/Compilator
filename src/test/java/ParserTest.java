@@ -12,7 +12,7 @@ public class ParserTest {
   public void test_parser() {
 
     // 1. Arrange
-    String sourceCode = "if (10 == a) {\n" +
+    String sourceCode = "let a = 10 if (10 == a) {\n" +
            "     show 1" +
            "} else {\n" +
            "     show 2" +

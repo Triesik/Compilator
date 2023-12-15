@@ -1,5 +1,6 @@
 package org.example.parser.context.implementation;
 
+import org.example.parser.context.ParseTree;
 import org.example.visitor.Visitor;
 import org.example.parser.context.ParserRuleContext;
 
@@ -16,9 +17,9 @@ public class ShowContext extends ParserRuleContext {
 
     private final TerminalNode stringValue;
 
-    private final ExpressionContext expressionContext;
+    private final ParseTree expressionContext;
 
-    public ShowContext(TerminalNode integerValue, TerminalNode variableName, TerminalNode stringValue, ExpressionContext expressionContext) {
+    public ShowContext(TerminalNode integerValue, TerminalNode variableName, TerminalNode stringValue, ParseTree expressionContext) {
         this.integerValue = integerValue;
         this.variableName = variableName;
         this.stringValue = stringValue;
@@ -44,7 +45,7 @@ public class ShowContext extends ParserRuleContext {
         return variableName;
     }
 
-    public ExpressionContext getExpressionContext() {
+    public ParseTree getExpressionContext() {
         return expressionContext;
     }
 

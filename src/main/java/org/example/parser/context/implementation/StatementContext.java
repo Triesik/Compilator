@@ -37,7 +37,7 @@ public class StatementContext extends ParserRuleContext {
         return showContext;
     }
 
-    public IfStatementContext getExpressionContext() {
+    public IfStatementContext getIfStatementContext() {
         return ifStatementContext;
     }
 

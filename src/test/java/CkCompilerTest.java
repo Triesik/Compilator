@@ -13,7 +13,12 @@ public class CkCompilerTest {
   @Test
   public void test_e2e() {
 
-    String sourceCode = "let a = 15 show (10 + 5 == a)";
+    String sourceCode = "let a = true if (10 + 5 == a) {\n" +
+          "     let b = true" +
+          "} else {\n" +
+          "     show 0" +
+          "}";
+//    String sourceCode = "let a = dsfsd show a";
     List<Character> codeArray = sourceCode.chars()
            .mapToObj(c -> (char) c).toList();
 

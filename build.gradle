@@ -19,7 +19,23 @@ dependencies {
     testCompileOnly 'org.projectlombok:lombok:1.18.30'
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
 }
+def fileNames = ['test.json', 'test.json', 'test.json']
 
+task extractIpFromJson {
+    doLast {
+        def jsonSlurper = new groovy.json.JsonSlurper()
+
+        def jsonFile = file('test.json').text
+        // Read the content of the JSON file
+
+        def json = jsonSlurper.parseText(jsonFile)
+
+        // Assuming there is only one node in the "nodes" array
+        def ipAddress = json.nodes[0].ip
+
+        println "Retrieved IP Address: $ipAddress"
+    }
+}
 test {
     useJUnitPlatform()
 }
