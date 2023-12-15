@@ -96,9 +96,6 @@ public class Parser {
         isTokenExpected(TokenType.OPEN_BRACE);
         scanner.nextToken();
         StatementContext ifStatement = parseStatement();
-        while(scanner.getCurrentToken() != TokenType.CLOSE_BRACE) {
-
-        }
         isTokenExpected(TokenType.CLOSE_BRACE);
         scanner.nextToken();
 

@@ -6,28 +6,17 @@ import org.example.parser.context.ParseTree;
 import org.example.parser.context.ProgramContext;
 import org.example.parser.context.implementation.*;
 import org.example.visitor.SimplerLangBaseVisitor;
-import org.objectweb.asm.*;
-import org.objectweb.asm.util.CheckClassAdapter;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Type;
 
 import java.io.FileOutputStream;
-import java.io.PrintWriter;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.objectweb.asm.Opcodes.*;
 
-/**
- * Visitor that converts AST to .class java byte code.
- *
- * <p>NOTE 1: To generate ASM code from Java Class you can use ASMifier. This will help you write
- * complex ASM codes. Ref:- @see <a
- * href="https://github.com/arjunsk/java-bytecode/tree/master/java-asm/ow2-asm-example/src/main/java/com/arjunsk/asm/asmifier">Java
- * ASMifier</a>
- *
- * <p>NOTE 2: Ops Code reference: @see <a
- * href="https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-6.html">Java Ops Code</a>
- */
 public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
 
    private final ClassWriter classWriter;
