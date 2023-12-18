@@ -30,7 +30,6 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
       this.classWriter = new ClassWriter(0);
       variableIndexMap = new HashMap<>();
 
-      // Variable0 is reserved for args[] in :  `main(String[] var0)`
       variableIndex = 1;
    }
 
@@ -81,7 +80,7 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
       mainMethodVisitor.visitJumpInsn(IFEQ, elseLabel);
 
       // Visit the true branch
-      visitStatement(context.getIfStatement());
+//      visitStatement(context.getIfStatement());
 
       // Jump to endLabel after executing the true branch
       mainMethodVisitor.visitJumpInsn(GOTO, endLabel);
@@ -90,9 +89,9 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
       mainMethodVisitor.visitLabel(elseLabel);
 
       // Visit the false branch if it exists
-      if (context.getElseStatement() != null) {
-         visitStatement(context.getElseStatement());
-      }
+//      if (context.getElseStatement() != null) {
+//         visitStatement(context.getElseStatement());
+//      }
 
       // Mark endLabel
       mainMethodVisitor.visitLabel(endLabel);

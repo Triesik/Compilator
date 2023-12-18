@@ -22,8 +22,18 @@ public class Parser {
     public ProgramContext parseProgram() {
         List<StatementContext> statements = new ArrayList<>();
         do {
+            scanner.nextToken();
             statements.add(parseStatement());
-        } while (scanner.nextToken());
+        } while (scanner.getCurrentToken().getType() != TokenType.CLOSE_BRACE);
+        return new ProgramContext(statements);
+    }
+
+    public ProgramContext parseStatements() {
+        List<StatementContext> statements = new ArrayList<>();
+        do {
+            scanner.nextToken();
+            statements.add(parseStatement());
+        } while (scanner.getCurrentToken().getType() != TokenType.CLOSE_BRACE);
         return new ProgramContext(statements);
     }
 
@@ -94,17 +104,13 @@ public class Parser {
         scanner.nextToken();
 
         isTokenExpected(TokenType.OPEN_BRACE);
-        scanner.nextToken();
-        StatementContext ifStatement = parseStatement();
-        isTokenExpected(TokenType.CLOSE_BRACE);
-        scanner.nextToken();
+        ProgramContext ifStatement = parseProgram();
 
-        StatementContext elseStatement = null;
+        ProgramContext elseStatement = null;
+        scanner.nextToken();
         if (scanner.getCurrentToken().getType() == TokenType.ELSE) {
             scanner.nextToken();
-            isTokenExpected(TokenType.OPEN_BRACE);
-            scanner.nextToken();
-            elseStatement = parseStatement();
+            elseStatement = parseProgram();
             scanner.nextToken();
             isTokenExpected(TokenType.CLOSE_BRACE);
         }
