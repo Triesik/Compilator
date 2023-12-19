@@ -22,6 +22,8 @@ public enum TokenType {
     MULTIPLY(TokenTypeGroup.OPERATOR),
     DIVIDE(TokenTypeGroup.OPERATOR),
     EQUALS(TokenTypeGroup.OPERATOR),
+    TRUE(TokenTypeGroup.VALUE),
+    FALSE(TokenTypeGroup.VALUE),
     ELSE(TokenTypeGroup.STATEMENT);
 
     private final TokenTypeGroup group;

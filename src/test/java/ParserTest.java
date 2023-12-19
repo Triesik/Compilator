@@ -12,12 +12,12 @@ public class ParserTest {
   public void test_parser() {
 
     // 1. Arrange
-    String sourceCode = "let a = 10 if (10 == a) {\n" +
-           "     show 1 let b = 15 show b" +
-           "} else {\n" +
-           "     show 2" +
-           "} }";
-//    String sourceCode = "show 1 let b = 15 show b";
+//    String sourceCode = "let a = 10 if (10 == a) {\n" +
+//           "     show 1 let b = 15 show b" +
+//           "} else {\n" +
+//           "     show 2" +
+//           "} let b = 12 }";
+    String sourceCode = "let a = (12+15+11*(6-2*3)) let b = 15 }";
     List<Character> codeArray = sourceCode.chars()
            .mapToObj(c -> (char) c).toList();
 

@@ -8,8 +8,13 @@ public class ScannerTest {
 
     @Test
     public void scannerTest() {
-        String code = "''";
-        List<Character> codeArray = code.chars()
+//        String sourceCode = "let a = 10 if (10 == a) {\n" +
+//              "     show 1 let b = 15 show b" +
+//              "} else {\n" +
+//              "     show 2" +
+//              "} let b = 12 }";
+        String sourceCode = "show 1 let c = 10";
+        List<Character> codeArray = sourceCode.chars()
                .mapToObj(c -> (char) c).toList();
         Scanner scanner = new Scanner(codeArray);
         while(scanner.nextToken()) {

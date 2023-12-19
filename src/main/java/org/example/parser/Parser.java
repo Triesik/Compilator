@@ -4,7 +4,7 @@ import org.example.domain.Token;
 import org.example.domain.TokenType;
 import org.example.domain.TokenTypeGroup;
 import org.example.parser.context.ParseTree;
-import org.example.parser.context.ProgramContext;
+import org.example.parser.context.StatementsContext;
 import org.example.parser.context.implementation.*;
 import org.example.scanner.Scanner;
 
@@ -20,21 +20,16 @@ public class Parser {
     }
 
     public ProgramContext parseProgram() {
-        List<StatementContext> statements = new ArrayList<>();
-        do {
-            scanner.nextToken();
-            statements.add(parseStatement());
-        } while (scanner.getCurrentToken().getType() != TokenType.CLOSE_BRACE);
-        return new ProgramContext(statements);
+        ProgramContext programContext = new ProgramContext(parseStatements());
+        return programContext;
     }
 
-    public ProgramContext parseStatements() {
+    public StatementsContext parseStatements() {
         List<StatementContext> statements = new ArrayList<>();
         do {
-            scanner.nextToken();
             statements.add(parseStatement());
         } while (scanner.getCurrentToken().getType() != TokenType.CLOSE_BRACE);
-        return new ProgramContext(statements);
+        return new StatementsContext(statements);
     }
 
     public StatementContext parseStatement() {
@@ -85,13 +80,15 @@ public class Parser {
         TerminalNode variableNameToken = parseTerminalNode(); // VAR
         scanner.nextToken();
         scanner.nextToken();
-        if(scanner.getCurrentToken().getType() == TokenType.NUMBER || scanner.getCurrentToken().getType() == TokenType.LEFT_PARENTHESIS) {
+        if(scanner.getCurrentToken().getType() == TokenType.NUMBER || scanner.getCurrentToken().getType() == TokenType.LEFT_PARENTHESIS || scanner.getCurrentToken().getType() == TokenType.TEXT) {
             ParseTree expressionContext = parseExpressionContext();
             return new LetContext(variableNameToken, expressionContext);
         }
 
-        TerminalNode valueToken = parseTerminalNode(); // INT
-
+        scanner.nextToken();
+        TerminalNode valueToken = parseTerminalNode();
+        scanner.nextToken();
+        scanner.nextToken();
         return new LetContext(variableNameToken, valueToken);
     }
 
@@ -100,19 +97,19 @@ public class Parser {
         scanner.nextToken();
         scanner.nextToken();
         ParseTree condition = parseExpressionContext();
-        scanner.nextToken();
-        scanner.nextToken();
 
+        scanner.nextToken();
         isTokenExpected(TokenType.OPEN_BRACE);
-        ProgramContext ifStatement = parseProgram();
+        scanner.nextToken();
+        StatementsContext ifStatement = parseStatements();
 
-        ProgramContext elseStatement = null;
+        StatementsContext elseStatement = null;
         scanner.nextToken();
         if (scanner.getCurrentToken().getType() == TokenType.ELSE) {
             scanner.nextToken();
-            elseStatement = parseProgram();
             scanner.nextToken();
-            isTokenExpected(TokenType.CLOSE_BRACE);
+            elseStatement = parseStatements();
+            scanner.nextToken();
         }
 
         return new IfStatementContext(condition, ifStatement, elseStatement);
@@ -170,21 +167,21 @@ public class Parser {
         Token currentToken = scanner.getCurrentToken();
 
         if (currentToken.getType() == TokenType.NUMBER || currentToken.getType() == TokenType.TEXT) {
-            if(scanner.getLookAheadToken().getType().getGroup() == TokenTypeGroup.OPERATOR || scanner.getLookAheadToken().getType().getGroup() == TokenTypeGroup.DELIMITER) {
-                scanner.nextToken(); // Consume the number
-            }
+            scanner.nextToken(); // Consume the number
             return new ExpressionNode(currentToken);
         } else if (currentToken.getType() == TokenType.LEFT_PARENTHESIS) {
             scanner.nextToken();
             ParseTree expression = parseExpression();
             if (scanner.getCurrentToken().getType() != TokenType.RIGHT_PARENTHESIS) {
-                throw new RuntimeException("Expected ')' at index " + scanner.getCurrentIndex());
+                throw new RuntimeException("Expected ')' at index " + scanner.getCurrentIndex() + " got: " + scanner.getCurrentToken());
             }
             scanner.nextToken();
             return expression;
         } else if (currentToken.getType() == TokenType.EQUALS) {
-            scanner.nextToken(); // Consume the '='
-            return new ExpressionNode(scanner.getCurrentToken());
+            scanner.nextToken();
+            ExpressionNode expressionNode = new ExpressionNode(scanner.getCurrentToken());
+            scanner.nextToken();
+            return expressionNode;
         } else {
             throw new RuntimeException("Unexpected token at index " + scanner.getCurrentIndex() +
                    ": " + currentToken.getValue());

@@ -5,11 +5,11 @@ import org.example.visitor.Visitor;
 
 import java.util.List;
 
-public class ProgramContext extends ParserRuleContext {
+public class StatementsContext extends ParserRuleContext {
 
   private final List<StatementContext> statements;
 
-  public ProgramContext(List<StatementContext> statements) {
+  public StatementsContext(List<StatementContext> statements) {
     this.statements = statements;
 
     // Add the statements as  children to this node.
@@ -28,6 +28,6 @@ public class ProgramContext extends ParserRuleContext {
 
   @Override
   public Object accept(Visitor visitor) {
-    return visitor.visitProgram(this);
+    return visitor.visitStatements(this);
   }
 }

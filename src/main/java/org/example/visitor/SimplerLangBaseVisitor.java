@@ -1,13 +1,18 @@
 package org.example.visitor;
 
 import org.example.parser.context.ParseTree;
-import org.example.parser.context.ProgramContext;
+import org.example.parser.context.StatementsContext;
 import org.example.parser.context.implementation.*;
 
 public class SimplerLangBaseVisitor implements Visitor {
 
   @Override
   public Object visitProgram(ProgramContext context) {
+    return visitChildren(context);
+  }
+
+  @Override
+  public Object visitStatements(StatementsContext context) {
     return visitChildren(context);
   }
 

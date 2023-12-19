@@ -3,7 +3,7 @@ package org.example.codegenerator;
 import org.example.domain.Token;
 import org.example.domain.TokenType;
 import org.example.parser.context.ParseTree;
-import org.example.parser.context.ProgramContext;
+import org.example.parser.context.StatementsContext;
 import org.example.parser.context.implementation.*;
 import org.example.visitor.SimplerLangBaseVisitor;
 import org.objectweb.asm.ClassWriter;
@@ -36,31 +36,27 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
    /**
     * Called when the program node is visited. The main entry point.
     */
+
    @Override
    public Void visitProgram(ProgramContext context) {
 
-      /* ASM = CODE : public class CgSample. */
-      // BEGIN 1: creates a ClassWriter for the `CgSample.class` public class,
       classWriter.visit(
-            V1_8, // Java 1.8
-            ACC_PUBLIC + ACC_SUPER, // public static
-            "CgSample", // Class Name
-            null, // Generics <T>
-            "java/lang/Object", // Interface extends Object (Super Class),
-            null // interface names
+            V1_8,
+            ACC_PUBLIC + ACC_SUPER,
+            "CgSample",
+            null,
+            "java/lang/Object",
+            null
       );
 
-      /* ASM = CODE : public static void main(String args[]). */
-      // BEGIN 2: creates a MethodVisitor for the 'main' method
       mainMethodVisitor =
             classWriter.visitMethod(
                   ACC_PUBLIC + ACC_STATIC, "main", "([Ljava/lang/String;)V", null, null);
 
       super.visitProgram(context);
-      // END 2: Close main()
       mainMethodVisitor.visitEnd();
 
-      // END 1: Close class()
+      mainMethodVisitor.visitInsn(RETURN);
       classWriter.visitEnd();
       byte[] code = classWriter.toByteArray();
       writeToFile(code);
@@ -80,7 +76,7 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
       mainMethodVisitor.visitJumpInsn(IFEQ, elseLabel);
 
       // Visit the true branch
-//      visitStatement(context.getIfStatement());
+      super.visitStatements(context.getIfStatement());
 
       // Jump to endLabel after executing the true branch
       mainMethodVisitor.visitJumpInsn(GOTO, endLabel);
@@ -89,13 +85,10 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
       mainMethodVisitor.visitLabel(elseLabel);
 
       // Visit the false branch if it exists
-//      if (context.getElseStatement() != null) {
-//         visitStatement(context.getElseStatement());
-//      }
+      super.visitStatements(context.getElseStatement());
 
       // Mark endLabel
       mainMethodVisitor.visitLabel(endLabel);
-      mainMethodVisitor.visitInsn(RETURN);
 
       return null;
    }
@@ -105,33 +98,24 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
       String variableName = context.getVariableName().getText();
       String variableValue = context.getVariableValue().getText();
 
-      if (variableValue.matches("^[-+]?\\d+$")) {
-         if (context.getVariableValue() instanceof ExpressionContext) {
-            visitExpressionContext((ExpressionContext) context.getVariableValue());
+      if(context.getVariableValue() instanceof ExpressionContext) {
+         visitExpression(context.getVariableValue());
+         mainMethodVisitor.visitVarInsn(ASTORE, variableIndex);
+      } else if(context.getVariableValue() instanceof ExpressionNode) {
+         if(variableIndexMap.containsKey(variableValue)) {
+            int index = variableIndexMap.get(variableValue).getIndex();
+            mainMethodVisitor.visitVarInsn(ALOAD, index);
             mainMethodVisitor.visitVarInsn(ASTORE, variableIndex);
          } else {
             int variableIntegerVal = Integer.parseInt(context.getVariableValue().getText());
-            mainMethodVisitor.visitIntInsn(BIPUSH, variableIntegerVal);
-            mainMethodVisitor.visitMethodInsn(
-                  INVOKESTATIC,
-                  Type.getType(Integer.class).getInternalName(),
-                  "valueOf",
-                  "(I)Ljava/lang/Integer;",
-                  false);
+            mainMethodVisitor.visitIntInsn(SIPUSH, variableIntegerVal);
+            mainMethodVisitor.visitMethodInsn(INVOKESTATIC, Type.getType(Integer.class).getInternalName(), "valueOf", "(I)Ljava/lang/Integer;", false);
             mainMethodVisitor.visitVarInsn(ASTORE, variableIndex);
          }
-      } else if (variableValue.equals("true") || variableValue.equals("false")) {
-         mainMethodVisitor.visitInsn(variableValue.equals("true") ? ICONST_1 : ICONST_0);
-         mainMethodVisitor.visitVarInsn(ISTORE, variableIndex);
-      } else {
-          if (context.getVariableValue() instanceof ExpressionContext) {
-              visitExpressionContext((ExpressionContext) context.getVariableValue());
-              mainMethodVisitor.visitVarInsn(ASTORE, variableIndex);
-          }
-          else {
-              mainMethodVisitor.visitLdcInsn(variableValue);
-              mainMethodVisitor.visitVarInsn(ASTORE, variableIndex);
-          }
+      }
+ {
+         mainMethodVisitor.visitLdcInsn(variableValue);
+         mainMethodVisitor.visitVarInsn(ASTORE, variableIndex);
       }
 
       variableIndexMap.put(variableName, new Variable(variableIndex, variableValue));
@@ -156,10 +140,10 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
                INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
       } else if (context.getExpressionContext() != null) {
          visitExpression(context.getExpressionContext());
-         if(variableIndexMap.get(context.getExpressionContext().getText()) != null && (variableIndexMap.get(context.getExpressionContext().getText()).getValue().equals("true") || variableIndexMap.get(context.getExpressionContext().getText()).getValue().equals("false"))) {
+         if (variableIndexMap.get(context.getExpressionContext().getText()) != null && isBooleanValue(context.getExpressionContext())) {
             mainMethodVisitor.visitMethodInsn(
                   INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Z)V", false);
-         } else if(context.getExpressionContext().getText().matches("-?\\d+(\\.\\d+)?")) {
+         } else if (context.getExpressionContext().getText().matches("-?\\d+(\\.\\d+)?")) {
             mainMethodVisitor.visitMethodInsn(
                   INVOKEVIRTUAL, "java/io/PrintStream", "println", "(I)V", false);
          } else {
@@ -200,7 +184,11 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
          if (symbol.getType() == TokenType.NUMBER) {
             int intValue = Integer.parseInt(symbol.getValue());
             mainMethodVisitor.visitIntInsn(BIPUSH, intValue);
+            mainMethodVisitor.visitMethodInsn(INVOKESTATIC, Type.getType(Integer.class).getInternalName(), "valueOf", "(I)Ljava/lang/Integer;", false);
          } else if (symbol.getType() == TokenType.TEXT) {
+            int index = variableIndexMap.get(symbol.getValue()).getIndex();
+            mainMethodVisitor.visitVarInsn(ALOAD, index);
+         } else if (isBooleanValue(tree)) {
             int index = variableIndexMap.get(symbol.getValue()).getIndex();
             mainMethodVisitor.visitVarInsn(ILOAD, index);
          }
@@ -213,12 +201,12 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
       // Equality comparison
       Label trueLabel = new Label();
       Label endLabel = new Label();
-      mainMethodVisitor.visitJumpInsn(IF_ICMPEQ, trueLabel); // Jump to trueLabel if the values are equal
-      mainMethodVisitor.visitInsn(ICONST_0); // False: Push 0 onto the stack
+      mainMethodVisitor.visitJumpInsn(IF_ICMPEQ, trueLabel);
+      mainMethodVisitor.visitInsn(ICONST_0);
       mainMethodVisitor.visitJumpInsn(GOTO, endLabel);
-      mainMethodVisitor.visitLabel(trueLabel); // Mark the true label
-      mainMethodVisitor.visitInsn(ICONST_1); // True: Push 1 onto the stack
-      mainMethodVisitor.visitLabel(endLabel); // Mark the end label
+      mainMethodVisitor.visitLabel(trueLabel);
+      mainMethodVisitor.visitInsn(ICONST_1);
+      mainMethodVisitor.visitLabel(endLabel);
    }
 
    private void writeToFile(byte[] code) {
@@ -228,4 +216,9 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
          ex.printStackTrace();
       }
    }
+
+   private boolean isBooleanValue(ParseTree context) {
+      return (variableIndexMap.get(context.getText()).getValue().equals("true") || variableIndexMap.get(context.getText()).getValue().equals("false"));
+   }
+
 }

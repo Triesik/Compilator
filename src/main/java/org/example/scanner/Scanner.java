@@ -113,9 +113,11 @@ public class Scanner {
 
     public Token getLookAheadToken() {
         int indexBeforePeek = currentIndex;
+        Token tokenBeforePeek = getCurrentToken();
         nextToken();
         Token lookAheadToken = currentToken;
         currentIndex = indexBeforePeek;
+        currentToken = tokenBeforePeek;
         return lookAheadToken;
     }
 
