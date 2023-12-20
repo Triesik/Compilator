@@ -98,26 +98,14 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
       String variableName = context.getVariableName().getText();
       String variableValue = context.getVariableValue().getText();
 
-      if(context.getVariableValue() instanceof ExpressionContext) {
+      if (context.getVariableValue() instanceof ExpressionContext || context.getVariableValue() instanceof ExpressionNode) {
          visitExpression(context.getVariableValue());
-         mainMethodVisitor.visitVarInsn(ASTORE, variableIndex);
-      } else if(context.getVariableValue() instanceof ExpressionNode) {
-         if(variableIndexMap.containsKey(variableValue)) {
-            int index = variableIndexMap.get(variableValue).getIndex();
-            mainMethodVisitor.visitVarInsn(ALOAD, index);
-            mainMethodVisitor.visitVarInsn(ASTORE, variableIndex);
-         } else {
-            int variableIntegerVal = Integer.parseInt(context.getVariableValue().getText());
-            mainMethodVisitor.visitIntInsn(SIPUSH, variableIntegerVal);
-            mainMethodVisitor.visitMethodInsn(INVOKESTATIC, Type.getType(Integer.class).getInternalName(), "valueOf", "(I)Ljava/lang/Integer;", false);
-            mainMethodVisitor.visitVarInsn(ASTORE, variableIndex);
-         }
       }
- {
+      else if(context.getVariableValue().getPayload() != null) {
          mainMethodVisitor.visitLdcInsn(variableValue);
-         mainMethodVisitor.visitVarInsn(ASTORE, variableIndex);
       }
 
+      mainMethodVisitor.visitVarInsn(ASTORE, variableIndex);
       variableIndexMap.put(variableName, new Variable(variableIndex, variableValue));
       variableIndex++;
 
@@ -188,9 +176,8 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
          } else if (symbol.getType() == TokenType.TEXT) {
             int index = variableIndexMap.get(symbol.getValue()).getIndex();
             mainMethodVisitor.visitVarInsn(ALOAD, index);
-         } else if (isBooleanValue(tree)) {
-            int index = variableIndexMap.get(symbol.getValue()).getIndex();
-            mainMethodVisitor.visitVarInsn(ILOAD, index);
+         } else if (symbol.getType() == TokenType.TRUE || symbol.getType() == TokenType.FALSE) {
+            mainMethodVisitor.visitIntInsn(BIPUSH, Boolean.parseBoolean(tree.getText()) ? 1 : 0);
          }
       } else if (tree instanceof ExpressionContext) {
          visitExpressionContext((ExpressionContext) tree);
@@ -198,7 +185,6 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
    }
 
    private void visitEqual() {
-      // Equality comparison
       Label trueLabel = new Label();
       Label endLabel = new Label();
       mainMethodVisitor.visitJumpInsn(IF_ICMPEQ, trueLabel);

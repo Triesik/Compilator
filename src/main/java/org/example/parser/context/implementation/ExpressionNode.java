@@ -61,5 +61,10 @@ public class ExpressionNode implements ParseTree {
     public Object accept(Visitor visitor) {
         return visitor.visitExpressionNode(this);
     }
+
+    public Token getSymbol() {
+        return symbol;
+    }
+
 }
 

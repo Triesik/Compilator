@@ -56,4 +56,9 @@ public class TerminalNode implements ParseTree {
   public Object accept(Visitor visitor) {
     return visitor.visitTerminal(this);
   }
+
+  public Token getSymbol() {
+    return symbol;
+  }
+
 }

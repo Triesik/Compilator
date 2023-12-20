@@ -68,8 +68,6 @@ public class Parser {
             terminal = parseTerminalNode();
             scanner.nextToken();
             return new ShowContext(null, null, terminal, null);
-        } else if (token.getType() == TokenType.TEXT) {
-            return new ShowContext(null, terminal, null, null);
         } else {
             throw new RuntimeException("Show not preceded with variable, string or expression");
         }
@@ -80,7 +78,7 @@ public class Parser {
         TerminalNode variableNameToken = parseTerminalNode(); // VAR
         scanner.nextToken();
         scanner.nextToken();
-        if(scanner.getCurrentToken().getType() == TokenType.NUMBER || scanner.getCurrentToken().getType() == TokenType.LEFT_PARENTHESIS || scanner.getCurrentToken().getType() == TokenType.TEXT) {
+        if(scanner.getCurrentToken().getType().getGroup() == TokenTypeGroup.VALUE || scanner.getCurrentToken().getType() == TokenType.LEFT_PARENTHESIS) {
             ParseTree expressionContext = parseExpressionContext();
             return new LetContext(variableNameToken, expressionContext);
         }
@@ -155,7 +153,7 @@ public class Parser {
 
         while (isMultiplicationOrDivision()) {
             TokenType operator = scanner.getCurrentToken().getType();
-            scanner.nextToken(); // Consume the operator
+            scanner.nextToken();
             ParseTree right = parseFactor();
             left = new ExpressionContext(left, operator, right);
         }
@@ -166,7 +164,7 @@ public class Parser {
     private ParseTree parseFactor() {
         Token currentToken = scanner.getCurrentToken();
 
-        if (currentToken.getType() == TokenType.NUMBER || currentToken.getType() == TokenType.TEXT) {
+        if (currentToken.getType().getGroup() == TokenTypeGroup.VALUE) {
             scanner.nextToken(); // Consume the number
             return new ExpressionNode(currentToken);
         } else if (currentToken.getType() == TokenType.LEFT_PARENTHESIS) {
