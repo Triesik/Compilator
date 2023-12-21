@@ -60,4 +60,16 @@ public class ExpressionContext extends ParserRuleContext {
     public Object accept(Visitor visitor) {
         return visitor.visitExpression(this);
     }
+
+    public void setLeftOperand(ParseTree leftOperand) {
+        this.leftOperand = leftOperand;
+    }
+
+    public void setOperator(TokenType operator) {
+        this.operator = operator;
+    }
+
+    public void setRightOperand(ParseTree rightOperand) {
+        this.rightOperand = rightOperand;
+    }
 }

@@ -69,25 +69,13 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
       Label elseLabel = new Label();
       Label endLabel = new Label();
 
-      // Visit the condition expression
       visitExpression(context.getCondition());
-
-      // Jump to elseLabel if the condition is false
       mainMethodVisitor.visitJumpInsn(IFEQ, elseLabel);
-
-      // Visit the true branch
       super.visitStatements(context.getIfStatement());
-
-      // Jump to endLabel after executing the true branch
       mainMethodVisitor.visitJumpInsn(GOTO, endLabel);
 
-      // Mark elseLabel
       mainMethodVisitor.visitLabel(elseLabel);
-
-      // Visit the false branch if it exists
       super.visitStatements(context.getElseStatement());
-
-      // Mark endLabel
       mainMethodVisitor.visitLabel(endLabel);
 
       return null;
@@ -105,9 +93,14 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
          mainMethodVisitor.visitLdcInsn(variableValue);
       }
 
-      mainMethodVisitor.visitVarInsn(ASTORE, variableIndex);
-      variableIndexMap.put(variableName, new Variable(variableIndex, variableValue));
-      variableIndex++;
+      if(variableIndexMap.get(variableName) == null) {
+         mainMethodVisitor.visitVarInsn(ASTORE, variableIndex);
+         variableIndexMap.put(variableName, new Variable(variableIndex, variableValue));
+         variableIndex++;
+      }
+      else {
+         mainMethodVisitor.visitVarInsn(ASTORE, variableIndexMap.get(variableName).getIndex());
+      }
 
       return null;
    }

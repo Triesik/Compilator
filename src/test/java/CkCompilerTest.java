@@ -13,18 +13,18 @@ public class CkCompilerTest {
   @Test
   public void test_e2e() {
 
-    String sourceCode = "let a = 10 if (10 == a) {\n" +
-          "     show 1 let b = 13 show b" +
-          "} else {\n" +
-          "     show 2" +
-          "} let c = 12 let d = 15 }";
-//    String sourceCode = "(12+15+11*((6-(2+6)))) let b = 15 }";
-//    String sourceCode = "let a = 5 if (10 == a) {\n" +
+//    String sourceCode = "let a = 10 if (10 == a) {\n" +
+//          "     show 1 let b = 13 show b" +
+//          "} else {\n" +
+//          "     show 2 if(2 == a) { let g = 5 + 5 show g show 3} else {show 2}" +
+//          "} let c = 12 let d = 15 }";
+//    String sourceCode = "let a = (12+15+11*((6-(2+6)))) let b = 15 }";
+//    String sourceCode = "let a = 10 if (10 + 12 == a - 5 + 12) {\n" +
 //          "     show 1" +
 //          "} else {\n" +
 //          "     show 2" +
 //          "}}";
-//    String sourceCode = "let a = false }";
+    String sourceCode = "let a = 10 a = 12 }";
     List<Character> codeArray = sourceCode.chars()
            .mapToObj(c -> (char) c).toList();
 
