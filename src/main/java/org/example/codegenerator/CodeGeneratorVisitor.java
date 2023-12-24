@@ -161,19 +161,23 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
 
    private void visitExpressionNode(ParseTree tree) {
       if (tree instanceof ExpressionNode) {
-         Token symbol = (Token) tree.getPayload();
-         if (symbol.getType() == TokenType.NUMBER) {
-            int intValue = Integer.parseInt(symbol.getValue());
-            mainMethodVisitor.visitIntInsn(BIPUSH, intValue);
-            mainMethodVisitor.visitMethodInsn(INVOKESTATIC, Type.getType(Integer.class).getInternalName(), "valueOf", "(I)Ljava/lang/Integer;", false);
-         } else if (symbol.getType() == TokenType.TEXT) {
-            int index = variableIndexMap.get(symbol.getValue()).getIndex();
-            mainMethodVisitor.visitVarInsn(ALOAD, index);
-         } else if (symbol.getType() == TokenType.TRUE || symbol.getType() == TokenType.FALSE) {
-            mainMethodVisitor.visitIntInsn(BIPUSH, Boolean.parseBoolean(tree.getText()) ? 1 : 0);
-         }
+         generateExpressionNode(tree);
       } else if (tree instanceof ExpressionContext) {
          visitExpressionContext((ExpressionContext) tree);
+      }
+   }
+
+   private void generateExpressionNode(ParseTree tree) {
+      Token symbol = (Token) tree.getPayload();
+      if (symbol.getType() == TokenType.NUMBER) {
+         int intValue = Integer.parseInt(symbol.getValue());
+         mainMethodVisitor.visitIntInsn(BIPUSH, intValue);
+         mainMethodVisitor.visitMethodInsn(INVOKESTATIC, Type.getType(Integer.class).getInternalName(), "valueOf", "(I)Ljava/lang/Integer;", false);
+      } else if (symbol.getType() == TokenType.TEXT) {
+         int index = variableIndexMap.get(symbol.getValue()).getIndex();
+         mainMethodVisitor.visitVarInsn(ALOAD, index);
+      } else if (symbol.getType() == TokenType.TRUE || symbol.getType() == TokenType.FALSE) {
+         mainMethodVisitor.visitIntInsn(BIPUSH, Boolean.parseBoolean(tree.getText()) ? 1 : 0);
       }
    }
 

@@ -3,6 +3,7 @@ package org.example.visitor;
 import org.example.parser.context.ParseTree;
 import org.example.parser.context.StatementsContext;
 import org.example.parser.context.implementation.*;
+import org.example.parser.context.implementation.TerminalNode;
 
 public class SimplerLangBaseVisitor implements Visitor {
 
@@ -48,6 +49,11 @@ public class SimplerLangBaseVisitor implements Visitor {
 
   @Override
   public Object visitTerminal(TerminalNode context) {
+    return defaultResult();
+  }
+
+  @Override
+  public Object visitInput(InputContext inputContext) {
     return defaultResult();
   }
 

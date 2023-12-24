@@ -1,6 +1,5 @@
 package org.example.parser.context.implementation;
 
-import org.example.parser.Parser;
 import org.example.parser.context.ParseTree;
 import org.example.visitor.Visitor;
 import org.example.parser.context.ParserRuleContext;

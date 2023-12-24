@@ -6,6 +6,7 @@ import org.example.domain.TokenTypeGroup;
 import org.example.parser.context.ParseTree;
 import org.example.parser.context.StatementsContext;
 import org.example.parser.context.implementation.*;
+import org.example.parser.context.implementation.TerminalNode;
 import org.example.scanner.Scanner;
 
 import java.util.ArrayList;
@@ -68,6 +69,15 @@ public class Parser {
         }
     }
 
+    public InputContext parseInputContext() {
+        scanner.nextToken();
+        scanner.nextToken();
+        InputContext inputContext = new InputContext(parseTerminalNode());
+        scanner.nextToken();
+        scanner.nextToken();
+        return inputContext;
+    }
+
     public LetContext parseLet() {
         if(scanner.getCurrentToken().getValue().equals("let")) {
             scanner.nextToken();
@@ -78,6 +88,8 @@ public class Parser {
         if(scanner.getCurrentToken().getType().getGroup() == TokenTypeGroup.VALUE || scanner.getCurrentToken().getType() == TokenType.LEFT_PARENTHESIS) {
             ParseTree expressionContext = parseExpressionContext();
             return new LetContext(variableNameToken, expressionContext);
+        } else if(scanner.getCurrentToken().getType() == TokenType.INPUT) {
+            return new LetContext(variableNameToken, parseInputContext());
         }
 
         scanner.nextToken();
@@ -109,11 +121,6 @@ public class Parser {
     }
 
     public TerminalNode parseTerminalNode() {
-
-        if (scanner.getCurrentToken() == null) {
-            scanner.nextToken();
-        }
-
         TerminalNode token = new TerminalNode();
         token.setSymbol(scanner.getCurrentToken());
         return token;
@@ -194,8 +201,18 @@ public class Parser {
         return type == TokenType.MULTIPLY || type == TokenType.DIVIDE;
     }
 
-    private boolean isEquality() {
-        TokenType type = scanner.getCurrentToken().getType();
-        return type == TokenType.EQUALS;
+    private void nextToken() {
+        if (scanner.getCurrentToken() == null) {
+            scanner.nextToken();
+        }
     }
+
+    private void getNextToken(int countToSkip) {
+        for (int i = 0; i < countToSkip; i++) {
+            if (scanner.getCurrentToken() == null) {
+                scanner.nextToken();
+            }
+        }
+    }
+
 }

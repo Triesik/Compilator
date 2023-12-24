@@ -13,7 +13,7 @@ public class ScannerTest {
 //              "} else {\n" +
 //              "     show 2" +
 //              "} let b = 12 }";
-        String sourceCode = "show 1 let c = 10";
+        String sourceCode = "let a = 'test test test\" show a a = input 'enter a value'\"";
         List<Character> codeArray = sourceCode.chars()
                .mapToObj(c -> (char) c).toList();
         Scanner scanner = new Scanner(codeArray);

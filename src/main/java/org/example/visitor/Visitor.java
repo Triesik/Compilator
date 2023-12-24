@@ -2,6 +2,7 @@ package org.example.visitor;
 
 import org.example.parser.context.StatementsContext;
 import org.example.parser.context.implementation.*;
+import org.example.parser.context.implementation.TerminalNode;
 
 public interface Visitor {
 
@@ -15,4 +16,6 @@ public interface Visitor {
     Object visitExpressionNode(ExpressionNode context);
 
     Object visitIfStatement(IfStatementContext context);
+
+    Object visitInput(InputContext inputContext);
 }

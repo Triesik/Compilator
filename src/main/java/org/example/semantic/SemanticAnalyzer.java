@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class SemanticAnalyzer extends SimplerLangBaseVisitor {
 
-  private final Map<String, String> variableMap;
+  private final Map<java.lang.String, java.lang.String> variableMap;
 
   public SemanticAnalyzer() {
     super();
@@ -28,8 +28,8 @@ public class SemanticAnalyzer extends SimplerLangBaseVisitor {
   @Override
   public Void visitLet(LetContext context) {
 
-    String variableName = context.getVariableName().getText();
-    String variableValue = context.getVariableValue().getText();
+    java.lang.String variableName = context.getVariableName().getText();
+    java.lang.String variableValue = context.getVariableValue().getText();
 
     if (variableName == null || variableName.isEmpty()) {
       throw new RuntimeException("Variable name cannot be empty.");

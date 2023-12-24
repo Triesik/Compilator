@@ -24,7 +24,7 @@ public class CkCompilerTest {
 //          "} else {\n" +
 //          "     show 2" +
 //          "}}";
-    String sourceCode = "let a = 10 a = 12 }";
+    String sourceCode = "let b = input 'enter a value\"}";
     List<Character> codeArray = sourceCode.chars()
            .mapToObj(c -> (char) c).toList();
 

@@ -9,8 +9,8 @@ import java.util.regex.Pattern;
 
 public class Scanner {
 
-    private List<Character> sourceCode;
-    private int codeLength;
+    private final List<Character> sourceCode;
+    private final int codeLength;
     private int currentIndex;
 
     private Token currentToken;
@@ -37,7 +37,7 @@ public class Scanner {
                 currentIndex++;
             } else if (Character.isDigit(currentChar)) {
                currentToken = readNumber();
-            } else if (currentChar == '\'') {
+            } else if (currentChar == '\'' || currentChar == '\"') {
                 currentToken = new Token(TokenType.QUOTE, currentChar.toString());
                 currentIndex++;
             } else if (Character.isLetter(currentChar)) {
@@ -52,8 +52,9 @@ public class Scanner {
 
     private Token readLetter() {
         StringBuilder textValue = new StringBuilder();
+        Token startingToken = previousToken;
 
-        while (currentIndex < codeLength && Character.isLetter(sourceCode.get(currentIndex))) {
+        while ((currentIndex < codeLength && (Character.isLetter(sourceCode.get(currentIndex)) || (startingToken != null && startingToken.getValue().equals("'")) && sourceCode.get(currentIndex) != '\"'))) {
             textValue.append(sourceCode.get(currentIndex));
             currentIndex++;
         }

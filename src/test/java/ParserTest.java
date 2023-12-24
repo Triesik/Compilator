@@ -17,7 +17,7 @@ public class ParserTest {
 //           "} else {\n" +
 //           "     show 2" +
 //           "} let b = 12 }";
-    String sourceCode = "let a = (12+15+11*(6-2*3)) let b = 15 }";
+    String sourceCode = "let b = 15 }";
     List<Character> codeArray = sourceCode.chars()
            .mapToObj(c -> (char) c).toList();
 

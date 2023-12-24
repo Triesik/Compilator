@@ -30,7 +30,7 @@ public class TerminalNode implements ParseTree {
   }
 
   @Override
-  public String getText() {
+  public java.lang.String getText() {
     return this.symbol.getValue();
   }
 
@@ -48,7 +48,7 @@ public class TerminalNode implements ParseTree {
   }
 
   @Override
-  public String toStringTree() {
+  public java.lang.String toStringTree() {
     return getText();
   }
 
