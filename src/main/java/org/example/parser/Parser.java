@@ -35,7 +35,7 @@ public class Parser {
 
     public StatementContext parseStatement() {
         if (scanner.getCurrentToken() == null) {
-            scanner.nextToken();
+            nextToken();
         }
 
         Token token = scanner.getCurrentToken();
@@ -52,17 +52,17 @@ public class Parser {
     }
 
     public ShowContext parseShow() {
-        scanner.nextToken();
+        nextToken();
         TerminalNode terminal = parseTerminalNode();
         final Token token = (Token) terminal.getPayload();
 
         if (token.getType().getGroup() == TokenTypeGroup.VALUE || token.getType() == TokenType.LEFT_PARENTHESIS) {
             return new ShowContext(null, null, null, parseExpressionContext());
         } else if (token.getType().equals(TokenType.QUOTE)) {
-            scanner.nextToken();
+            nextToken();
             terminal = parseTerminalNode();
-            scanner.nextToken();
-            scanner.nextToken();
+            nextToken();
+            nextToken();
             return new ShowContext(null, null, terminal, null);
         } else {
             throw new RuntimeException("Show not preceded with variable, string or expression");
@@ -70,21 +70,18 @@ public class Parser {
     }
 
     public InputContext parseInputContext() {
-        scanner.nextToken();
-        scanner.nextToken();
+        nextToken(2);
         InputContext inputContext = new InputContext(parseTerminalNode());
-        scanner.nextToken();
-        scanner.nextToken();
+        nextToken(2);
         return inputContext;
     }
 
     public LetContext parseLet() {
         if(scanner.getCurrentToken().getValue().equals("let")) {
-            scanner.nextToken();
+            nextToken();
         }
         TerminalNode variableNameToken = parseTerminalNode();
-        scanner.nextToken();
-        scanner.nextToken();
+        nextToken(2);
         if(scanner.getCurrentToken().getType().getGroup() == TokenTypeGroup.VALUE || scanner.getCurrentToken().getType() == TokenType.LEFT_PARENTHESIS) {
             ParseTree expressionContext = parseExpressionContext();
             return new LetContext(variableNameToken, expressionContext);
@@ -92,29 +89,25 @@ public class Parser {
             return new LetContext(variableNameToken, parseInputContext());
         }
 
-        scanner.nextToken();
+        nextToken();
         TerminalNode valueToken = parseTerminalNode();
-        scanner.nextToken();
-        scanner.nextToken();
+        nextToken(2);
         return new LetContext(variableNameToken, valueToken);
     }
 
     public IfStatementContext parseIfStatement() {
-        scanner.nextToken();
-        scanner.nextToken();
+        nextToken(2);
         ParseTree condition = parseExpressionContext();
 
-        scanner.nextToken();
-        scanner.nextToken();
+        nextToken(2);
         StatementsContext ifStatement = parseStatements();
 
         StatementsContext elseStatement = null;
-        scanner.nextToken();
+        nextToken();
         if (scanner.getCurrentToken().getType() == TokenType.ELSE) {
-            scanner.nextToken();
-            scanner.nextToken();
+            nextToken(2);
             elseStatement = parseStatements();
-            scanner.nextToken();
+            nextToken();
         }
 
         return new IfStatementContext(condition, ifStatement, elseStatement);
@@ -129,8 +122,7 @@ public class Parser {
     public ParseTree parseExpressionContext() {
         ParseTree expression = parseExpression();
         if(scanner.getCurrentToken().getType() == TokenType.EQUALS) {
-            scanner.nextToken();
-            scanner.nextToken();
+            nextToken(2);
             ExpressionContext expressionContext = new ExpressionContext();
             expressionContext.setLeftOperand(expression);
             expressionContext.setOperator(TokenType.EQUALS);
@@ -145,7 +137,7 @@ public class Parser {
 
         while (isAdditionOrSubtraction()) {
            TokenType operator = scanner.getCurrentToken().getType();
-           scanner.nextToken();
+           nextToken();
            ParseTree right = parseTerm();
            left = new ExpressionContext(left, operator, right);
         }
@@ -158,7 +150,7 @@ public class Parser {
 
         while (isMultiplicationOrDivision()) {
             TokenType operator = scanner.getCurrentToken().getType();
-            scanner.nextToken();
+            nextToken();
             ParseTree right = parseFactor();
             left = new ExpressionContext(left, operator, right);
         }
@@ -170,20 +162,20 @@ public class Parser {
         Token currentToken = scanner.getCurrentToken();
 
         if (currentToken.getType().getGroup() == TokenTypeGroup.VALUE) {
-            scanner.nextToken();
+            nextToken();
             return new ExpressionNode(currentToken);
         } else if (currentToken.getType() == TokenType.LEFT_PARENTHESIS) {
-            scanner.nextToken();
+            nextToken();
             ParseTree expression = parseExpression();
             if (scanner.getCurrentToken().getType() != TokenType.RIGHT_PARENTHESIS) {
                 throw new RuntimeException("Expected ')' at index " + scanner.getCurrentIndex() + " got: " + scanner.getCurrentToken());
             }
-            scanner.nextToken();
+            nextToken();
             return expression;
         } else if (currentToken.getType() == TokenType.EQUALS) {
-            scanner.nextToken();
+            nextToken();
             ExpressionNode expressionNode = new ExpressionNode(scanner.getCurrentToken());
-            scanner.nextToken();
+            nextToken();
             return expressionNode;
         } else {
             throw new RuntimeException("Unexpected token at index " + scanner.getCurrentIndex() +
@@ -202,16 +194,12 @@ public class Parser {
     }
 
     private void nextToken() {
-        if (scanner.getCurrentToken() == null) {
-            scanner.nextToken();
-        }
+        scanner.nextToken();
     }
 
-    private void getNextToken(int countToSkip) {
+    private void nextToken(int countToSkip) {
         for (int i = 0; i < countToSkip; i++) {
-            if (scanner.getCurrentToken() == null) {
-                scanner.nextToken();
-            }
+            nextToken();
         }
     }
 

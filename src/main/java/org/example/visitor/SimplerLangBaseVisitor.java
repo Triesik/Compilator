@@ -64,7 +64,7 @@ public class SimplerLangBaseVisitor implements Visitor {
       result = c.accept(this);
     }
 
-    return result; // return the last accept result of the children list.
+    return result;
   }
 
   protected Object defaultResult() {

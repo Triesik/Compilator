@@ -88,8 +88,10 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
 
       if (context.getVariableValue() instanceof ExpressionContext || context.getVariableValue() instanceof ExpressionNode) {
          visitExpression(context.getVariableValue());
+      } else if(context.getVariableValue() instanceof InputContext) {
+         visitInput((InputContext) context.getVariableValue());
       }
-      else if(context.getVariableValue().getPayload() != null) {
+      else {
          mainMethodVisitor.visitLdcInsn(variableValue);
       }
 
@@ -179,6 +181,22 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
       } else if (symbol.getType() == TokenType.TRUE || symbol.getType() == TokenType.FALSE) {
          mainMethodVisitor.visitIntInsn(BIPUSH, Boolean.parseBoolean(tree.getText()) ? 1 : 0);
       }
+   }
+
+   @Override
+   public Void visitInput(InputContext inputContext) {
+
+      mainMethodVisitor.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
+      mainMethodVisitor.visitLdcInsn(inputContext.getInputText().getText());
+      mainMethodVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/io/PrintStream", "print", "(Ljava/lang/String;)V", false);
+
+      mainMethodVisitor.visitTypeInsn(NEW, "java/util/Scanner");
+      mainMethodVisitor.visitInsn(DUP);
+      mainMethodVisitor.visitFieldInsn(GETSTATIC, "java/lang/System", "in", "Ljava/io/InputStream;");
+      mainMethodVisitor.visitMethodInsn(INVOKESPECIAL, "java/util/Scanner", "<init>", "(Ljava/io/InputStream;)V", false);
+      mainMethodVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/util/Scanner", "nextLine", "()Ljava/lang/String;", false);
+
+      return null;
    }
 
    private void visitEqual() {

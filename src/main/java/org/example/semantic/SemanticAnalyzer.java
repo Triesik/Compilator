@@ -28,15 +28,15 @@ public class SemanticAnalyzer extends SimplerLangBaseVisitor {
   @Override
   public Void visitLet(LetContext context) {
 
-    java.lang.String variableName = context.getVariableName().getText();
-    java.lang.String variableValue = context.getVariableValue().getText();
-
-    if (variableName == null || variableName.isEmpty()) {
-      throw new RuntimeException("Variable name cannot be empty.");
-    } else if (variableValue == null || variableValue.isEmpty()) {
-      throw new RuntimeException("Variable value cannot be empty.");
-    }
-    variableMap.put(variableName, variableValue);
+//    java.lang.String variableName = context.getVariableName().getText();
+//    java.lang.String variableValue = context.getVariableValue().getText();
+//
+//    if (variableName == null || variableName.isEmpty()) {
+//      throw new RuntimeException("Variable name cannot be empty.");
+//    } else if (variableValue == null || variableValue.isEmpty()) {
+//      throw new RuntimeException("Variable value cannot be empty.");
+//    }
+//    variableMap.put(variableName, variableValue);
 
     return (Void) super.visitLet(context);
   }
