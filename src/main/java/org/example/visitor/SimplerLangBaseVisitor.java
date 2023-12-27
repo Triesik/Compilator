@@ -57,6 +57,21 @@ public class SimplerLangBaseVisitor implements Visitor {
     return defaultResult();
   }
 
+  @Override
+  public Object visitFunction(FunctionContext context) {
+    return visitChildren(context);
+  }
+
+  @Override
+  public Object visitReturn(ReturnContext context) {
+    return visitChildren(context);
+  }
+
+  @Override
+  public Object visitFunctionCall(FunctionCallContext functionCallContext) {
+    return visitChildren(functionCallContext);
+  }
+
   public Object visitChildren(ParseTree node) {
     Object result = defaultResult();
     for (int i = 0; i < node.getChildCount(); i++) {

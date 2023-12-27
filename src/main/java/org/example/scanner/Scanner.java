@@ -40,6 +40,9 @@ public class Scanner {
             } else if (currentChar == '\'' || currentChar == '\"') {
                 currentToken = new Token(TokenType.QUOTE, currentChar.toString());
                 currentIndex++;
+            } else if (currentChar == ',') {
+                currentToken = new Token(TokenType.QUOTE, currentChar.toString());
+                currentIndex++;
             } else if (Character.isLetter(currentChar)) {
                 currentToken = readLetter();
             } else {

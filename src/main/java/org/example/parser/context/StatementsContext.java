@@ -12,7 +12,6 @@ public class StatementsContext extends ParserRuleContext {
   public StatementsContext(List<StatementContext> statements) {
     this.statements = statements;
 
-    // Add the statements as  children to this node.
     for (StatementContext statement : statements) {
       this.addChild(statement);
     }

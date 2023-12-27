@@ -21,8 +21,7 @@ public class Parser {
     }
 
     public ProgramContext parseProgram() {
-        ProgramContext programContext = new ProgramContext(parseStatements());
-        return programContext;
+        return new ProgramContext(parseStatements());
     }
 
     public StatementsContext parseStatements() {
@@ -40,15 +39,57 @@ public class Parser {
 
         Token token = scanner.getCurrentToken();
 
-        if (token.getType() == TokenType.LET || token.getType() == TokenType.TEXT) {
-            return new StatementContext(parseLet(), null, null);
+        if ((token.getType() == TokenType.LET || token.getType() == TokenType.TEXT)) {
+            if(scanner.getLookAheadToken().getType() == TokenType.LEFT_PARENTHESIS) {
+                return parseFunctionCallContext();
+            } else {
+                return new StatementContext(parseLet(), null, null, null);
+            }
         } else if (token.getType() == TokenType.SHOW) {
-            return new StatementContext(null, parseShow(), null);
+            return new StatementContext(null, parseShow(), null, null);
         } else if (token.getType() == TokenType.IF) {
-            return new StatementContext(null, null, parseIfStatement());
+            return new StatementContext(null, null, parseIfStatement(), null);
+        } else if (token.getType() == TokenType.FUNC) {
+            return new StatementContext(null, null, null, parseFunctionContext());
+        } else if (token.getType() == TokenType.RETURN) {
+            return parseReturnContext();
         } else {
             throw new RuntimeException("Unexpected token type: " + token.getType());
         }
+    }
+
+    private StatementContext parseFunctionCallContext() {
+        StatementContext statementContext = new StatementContext(null, null, null, null);
+        FunctionCallContext functionCallContext = new FunctionCallContext(scanner.getCurrentToken().getValue());
+        nextToken();
+        while(scanner.getCurrentToken().getType() != TokenType.RIGHT_PARENTHESIS) {
+            nextToken();
+            functionCallContext.addChild(parseExpression());
+        }
+        nextToken();
+        statementContext.addChild(functionCallContext);
+        return statementContext;
+    }
+
+    private StatementContext parseReturnContext() {
+        StatementContext statementContext = new StatementContext(null, null, null, null);
+        nextToken();
+        ReturnContext returnContext = new ReturnContext(parseExpressionContext());
+        statementContext.addChild(returnContext);
+        return statementContext;
+    }
+
+    public FunctionContext parseFunctionContext() {
+        nextToken();
+        String returnType = scanner.getCurrentToken().getType().name().toUpperCase();
+        nextToken();
+        String functionName = scanner.getCurrentToken().getValue();
+        nextToken();
+        List<FunctionParameter> functionParameters = getFunctionParameters();
+        nextToken();
+        FunctionContext functionContext = new FunctionContext(parseStatements(), functionParameters, functionName, returnType);
+        nextToken();
+        return functionContext;
     }
 
     public ShowContext parseShow() {
@@ -77,15 +118,15 @@ public class Parser {
     }
 
     public LetContext parseLet() {
-        if(scanner.getCurrentToken().getValue().equals("let")) {
+        if (scanner.getCurrentToken().getValue().equals("let")) {
             nextToken();
         }
         TerminalNode variableNameToken = parseTerminalNode();
         nextToken(2);
-        if(scanner.getCurrentToken().getType().getGroup() == TokenTypeGroup.VALUE || scanner.getCurrentToken().getType() == TokenType.LEFT_PARENTHESIS) {
+        if (scanner.getCurrentToken().getType().getGroup() == TokenTypeGroup.VALUE || scanner.getCurrentToken().getType() == TokenType.LEFT_PARENTHESIS) {
             ParseTree expressionContext = parseExpressionContext();
             return new LetContext(variableNameToken, expressionContext);
-        } else if(scanner.getCurrentToken().getType() == TokenType.INPUT) {
+        } else if (scanner.getCurrentToken().getType() == TokenType.INPUT) {
             return new LetContext(variableNameToken, parseInputContext());
         }
 
@@ -120,26 +161,27 @@ public class Parser {
     }
 
     public ParseTree parseExpressionContext() {
-        ParseTree expression = parseExpression();
-        if(scanner.getCurrentToken().getType() == TokenType.EQUALS) {
+        ExpressionContext expressionContext = new ExpressionContext();
+        expressionContext.addChild(parseExpression());
+        if (scanner.getCurrentToken().getType() == TokenType.EQUALS) {
             nextToken(2);
-            ExpressionContext expressionContext = new ExpressionContext();
-            expressionContext.setLeftOperand(expression);
-            expressionContext.setOperator(TokenType.EQUALS);
-            expressionContext.setRightOperand(parseExpression());
-            return expressionContext;
+            ExpressionContext expressionContext1 = new ExpressionContext();
+            expressionContext1.setLeftOperand(expressionContext);
+            expressionContext1.setOperator(TokenType.EQUALS);
+            expressionContext1.setRightOperand(parseExpression());
+            return expressionContext1;
         }
-        return expression;
+        return expressionContext;
     }
 
     private ParseTree parseExpression() {
         ParseTree left = parseTerm();
 
         while (isAdditionOrSubtraction()) {
-           TokenType operator = scanner.getCurrentToken().getType();
-           nextToken();
-           ParseTree right = parseTerm();
-           left = new ExpressionContext(left, operator, right);
+            TokenType operator = scanner.getCurrentToken().getType();
+            nextToken();
+            ParseTree right = parseTerm();
+            left = new ExpressionContext(left, operator, right);
         }
 
         return left;
@@ -162,6 +204,9 @@ public class Parser {
         Token currentToken = scanner.getCurrentToken();
 
         if (currentToken.getType().getGroup() == TokenTypeGroup.VALUE) {
+            if(scanner.getLookAheadToken().getType() == TokenType.LEFT_PARENTHESIS) {
+                return parseFunctionCallContext();
+            }
             nextToken();
             return new ExpressionNode(currentToken);
         } else if (currentToken.getType() == TokenType.LEFT_PARENTHESIS) {
@@ -177,7 +222,7 @@ public class Parser {
             ExpressionNode expressionNode = new ExpressionNode(scanner.getCurrentToken());
             nextToken();
             return expressionNode;
-        } else {
+        }  else {
             throw new RuntimeException("Unexpected token at index " + scanner.getCurrentIndex() +
                    ": " + currentToken.getValue());
         }
@@ -191,6 +236,20 @@ public class Parser {
     private boolean isMultiplicationOrDivision() {
         TokenType type = scanner.getCurrentToken().getType();
         return type == TokenType.MULTIPLY || type == TokenType.DIVIDE;
+    }
+
+    private List<FunctionParameter> getFunctionParameters() {
+        List<FunctionParameter> functionParameters = new ArrayList<>();
+        while(scanner.getCurrentToken().getType() != TokenType.RIGHT_PARENTHESIS) {
+            nextToken();
+            TokenType parameterType = scanner.getCurrentToken().getType();
+            nextToken();
+            String parameterName = scanner.getCurrentToken().getValue();
+            functionParameters.add(new FunctionParameter(parameterType, parameterName));
+            scanner.nextToken();
+        }
+        nextToken();
+        return functionParameters;
     }
 
     private void nextToken() {

@@ -16,7 +16,6 @@ public class IfStatementContext extends ParserRuleContext {
         this.ifStatement = ifStatement;
         this.elseStatement = elseStatement;
 
-        // Add the arguments as children to this node.
         this.addChild(condition);
         this.addChild(ifStatement);
         if (elseStatement != null) {

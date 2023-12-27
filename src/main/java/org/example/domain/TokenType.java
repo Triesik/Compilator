@@ -3,6 +3,11 @@ package org.example.domain;
 
 public enum TokenType {
     SHOW(TokenTypeGroup.STATEMENT),
+    FUNC(TokenTypeGroup.STATEMENT),
+    NUMB(TokenTypeGroup.STATEMENT),
+    BOOLEAN(TokenTypeGroup.STATEMENT),
+    STRING(TokenTypeGroup.STATEMENT),
+    COMA(TokenTypeGroup.DELIMITER),
     OPERATOR(TokenTypeGroup.OPERATOR),
     INPUT(TokenTypeGroup.STATEMENT),
     WHILE(TokenTypeGroup.STATEMENT),
@@ -24,7 +29,8 @@ public enum TokenType {
     EQUALS(TokenTypeGroup.OPERATOR),
     TRUE(TokenTypeGroup.VALUE),
     FALSE(TokenTypeGroup.VALUE),
-    ELSE(TokenTypeGroup.STATEMENT);
+    ELSE(TokenTypeGroup.STATEMENT),
+    RETURN(TokenTypeGroup.STATEMENT);
 
     private final TokenTypeGroup group;
 

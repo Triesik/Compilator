@@ -18,4 +18,10 @@ public interface Visitor {
     Object visitIfStatement(IfStatementContext context);
 
     Object visitInput(InputContext inputContext);
+
+   Object visitFunction(FunctionContext functionContext);
+
+    Object visitReturn(ReturnContext returnContext);
+
+    Object visitFunctionCall(FunctionCallContext functionCallContext);
 }

@@ -63,6 +63,7 @@ public class ExpressionContext extends ParserRuleContext {
 
     public void setLeftOperand(ParseTree leftOperand) {
         this.leftOperand = leftOperand;
+        addChild(leftOperand);
     }
 
     public void setOperator(TokenType operator) {
@@ -71,5 +72,6 @@ public class ExpressionContext extends ParserRuleContext {
 
     public void setRightOperand(ParseTree rightOperand) {
         this.rightOperand = rightOperand;
+        addChild(rightOperand);
     }
 }

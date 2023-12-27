@@ -1,5 +1,6 @@
 package org.example.parser.context.implementation;
 
+import lombok.NoArgsConstructor;
 import org.example.visitor.Visitor;
 import org.example.parser.context.ParserRuleContext;
 
@@ -14,17 +15,18 @@ public class StatementContext extends ParserRuleContext {
     private final ShowContext showContext;
     private final IfStatementContext ifStatementContext;
 
-    public StatementContext(LetContext letContext, ShowContext showContext, IfStatementContext ifStatementContext) {
+    public StatementContext(LetContext letContext, ShowContext showContext, IfStatementContext ifStatementContext, FunctionContext functionContext) {
         this.letContext = letContext;
         this.showContext = showContext;
         this.ifStatementContext = ifStatementContext;
 
-        // Conditionally add child node
         if (letContext != null) {
             this.addChild(letContext);
         } else if (showContext != null) {
             this.addChild(showContext);
-        } else {
+        } else if (functionContext != null) {
+            this.addChild(functionContext);
+        } else if(ifStatementContext != null) {
             this.addChild(ifStatementContext);
         }
     }
