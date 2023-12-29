@@ -58,8 +58,8 @@ public class ExpressionNode implements ParseTree {
     }
 
     @Override
-    public Object accept(Visitor visitor) {
-        return visitor.visitExpressionNode(this);
+    public void accept(Visitor visitor) {
+        visitor.visitExpressionNode(this);
     }
 
     public Token getSymbol() {

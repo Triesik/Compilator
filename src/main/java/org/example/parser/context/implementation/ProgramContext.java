@@ -20,7 +20,7 @@ public class ProgramContext extends ParserRuleContext {
   }
 
   @Override
-  public Object accept(Visitor visitor) {
-    return visitor.visitProgram(this);
+  public void accept(Visitor visitor) {
+    visitor.visitProgram(this);
   }
 }

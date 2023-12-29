@@ -11,7 +11,7 @@ public class ReturnContext extends ParserRuleContext {
     }
 
     @Override
-    public Object accept(Visitor visitor) {
-        return visitor.visitReturn(this);
+    public void accept(Visitor visitor) {
+        visitor.visitReturn(this);
     }
 }

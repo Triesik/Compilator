@@ -8,81 +8,79 @@ import org.example.parser.context.implementation.TerminalNode;
 public class SimplerLangBaseVisitor implements Visitor {
 
   @Override
-  public Object visitProgram(ProgramContext context) {
-    return visitChildren(context);
+  public void visitProgram(ProgramContext context) {
+    visitChildren(context);
   }
 
   @Override
-  public Object visitStatements(StatementsContext context) {
-    return visitChildren(context);
+  public void visitStatements(StatementsContext context) {
+    visitChildren(context);
   }
 
   @Override
-  public Object visitStatement(StatementContext context) {
-    return visitChildren(context);
+  public void visitStatement(StatementContext context) {
+    visitChildren(context);
   }
 
   @Override
-  public Object visitLet(LetContext context) {
-    return visitChildren(context);
+  public void visitLet(LetContext context) {
+    visitChildren(context);
   }
 
   @Override
-  public Object visitShow(ShowContext context) {
-    return visitChildren(context);
+  public void visitShow(ShowContext context) {
+    visitChildren(context);
   }
 
   @Override
-  public Object visitExpression(ExpressionContext context) {
-    return visitChildren(context);
+  public void visitExpression(ExpressionContext context) {
+    visitChildren(context);
   }
 
   @Override
-  public Object visitExpressionNode(ExpressionNode context) {
-    return visitChildren(context);
+  public void visitExpressionNode(ExpressionNode context) {
+    visitChildren(context);
   }
 
   @Override
-  public Object visitIfStatement(IfStatementContext context) {
-    return visitChildren(context);
+  public void visitIfStatement(IfStatementContext context) {
+    visitChildren(context);
   }
 
   @Override
-  public Object visitTerminal(TerminalNode context) {
-    return defaultResult();
+  public void visitTerminal(TerminalNode context) {
+    defaultResult();
   }
 
   @Override
-  public Object visitInput(InputContext inputContext) {
-    return defaultResult();
+  public void visitInput(InputContext inputContext) {
+    defaultResult();
   }
 
   @Override
-  public Object visitFunction(FunctionContext context) {
-    return visitChildren(context);
+  public void visitFunction(FunctionContext context) {
+    visitChildren(context);
   }
 
   @Override
-  public Object visitReturn(ReturnContext context) {
-    return visitChildren(context);
+  public void visitReturn(ReturnContext context) {
+    visitChildren(context);
   }
 
   @Override
-  public Object visitFunctionCall(FunctionCallContext functionCallContext) {
-    return visitChildren(functionCallContext);
+  public void visitFunctionCall(FunctionCallContext functionCallContext) {
+    visitChildren(functionCallContext);
   }
 
-  public Object visitChildren(ParseTree node) {
-    Object result = defaultResult();
+  public void visitChildren(ParseTree node) {
     for (int i = 0; i < node.getChildCount(); i++) {
       ParseTree c = node.getChild(i);
-      result = c.accept(this);
+       c.accept(this);
     }
-
-    return result;
+    
   }
 
   protected Object defaultResult() {
-    return null;
+   return null;
   }
 }

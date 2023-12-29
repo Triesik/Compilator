@@ -57,8 +57,8 @@ public class ExpressionContext extends ParserRuleContext {
     }
 
     @Override
-    public Object accept(Visitor visitor) {
-        return visitor.visitExpression(this);
+    public void accept(Visitor visitor) {
+        visitor.visitExpression(this);
     }
 
     public void setLeftOperand(ParseTree leftOperand) {

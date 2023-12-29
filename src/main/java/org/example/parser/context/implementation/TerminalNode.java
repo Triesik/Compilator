@@ -53,8 +53,8 @@ public class TerminalNode implements ParseTree {
   }
 
   @Override
-  public Object accept(Visitor visitor) {
-    return visitor.visitTerminal(this);
+  public void accept(Visitor visitor) {
+    visitor.visitTerminal(this);
   }
 
   public Token getSymbol() {

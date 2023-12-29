@@ -35,7 +35,7 @@ public class FunctionContext extends ParserRuleContext {
   }
 
   @Override
-  public Object accept(Visitor visitor) {
-    return visitor.visitFunction(this);
+  public void accept(Visitor visitor) {
+    visitor.visitFunction(this);
   }
 }

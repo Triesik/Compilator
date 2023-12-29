@@ -35,7 +35,7 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
    }
 
    @Override
-   public Void visitProgram(ProgramContext context) {
+   public void visitProgram(ProgramContext context) {
 
       classWriter.visit(
             V1_8,
@@ -58,11 +58,11 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
       byte[] code = classWriter.toByteArray();
       writeToFile(code);
 
-      return null;
+      
    }
 
    @Override
-   public Void visitFunction(FunctionContext context) {
+   public void visitFunction(FunctionContext context) {
       MethodVisitor methodVisitorForMain = mainMethodVisitor;
       int indexForMain = variableIndex;
       Map<String, Variable> indexMapForMain = variableIndexMap;
@@ -88,28 +88,28 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
       mainMethodVisitor = methodVisitorForMain;
       variableIndex = indexForMain;
       variableIndexMap = indexMapForMain;
-      return null;
+      
    }
 
    @Override
-   public Void visitFunctionCall(FunctionCallContext context) {
+   public void visitFunctionCall(FunctionCallContext context) {
 
       super.visitFunctionCall(context);
       mainMethodVisitor.visitMethodInsn(INVOKESTATIC, "CgSample", context.getFunctionName(), functionDescriptorMap.get(context.getFunctionName()), false);
 
-      return null;
+      
    }
 
    @Override
-   public Void visitReturn(ReturnContext context) {
+   public void visitReturn(ReturnContext context) {
       super.visitReturn(context);
       mainMethodVisitor.visitInsn(IRETURN);
 
-      return null;
+      
    }
 
    @Override
-   public Void visitIfStatement(IfStatementContext context) {
+   public void visitIfStatement(IfStatementContext context) {
       Label elseLabel = new Label();
 
       visitExpression((ExpressionContext) context.getCondition());
@@ -126,11 +126,11 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
          mainMethodVisitor.visitLabel(endLabel);
       }
 
-      return null;
+      
    }
 
    @Override
-   public Void visitLet(LetContext context) {
+   public void visitLet(LetContext context) {
       String variableName = context.getVariableName().getText();
       String variableValue = context.getVariableValue().getText();
       super.visitLet(context);
@@ -144,11 +144,11 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
          mainMethodVisitor.visitVarInsn(ASTORE, variableIndexMap.get(variableName).getIndex());
       }
 
-      return null;
+      
    }
 
    @Override
-   public Void visitShow(ShowContext context) {
+   public void visitShow(ShowContext context) {
       mainMethodVisitor.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
 
       super.visitShow(context);
@@ -175,7 +175,7 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
                   INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/Object;)V", false);
          }
       }
-      return null;
+      
    }
 
 
@@ -183,7 +183,7 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
 
 
    @Override
-   public Void visitExpression(ExpressionContext context) {
+   public void visitExpression(ExpressionContext context) {
       super.visitExpression(context);
 
       if(context.getOperator() != null) {
@@ -195,14 +195,14 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
             //case EQUALS -> generateEqual();
          }
       }
-      return null;
+      
    }
 
    @Override
-   public Void visitExpressionNode(ExpressionNode expressionNode) {
+   public void visitExpressionNode(ExpressionNode expressionNode) {
       super.visitExpressionNode(expressionNode);
       generateExpressionNode(expressionNode);
-      return null;
+      
    }
 
    private void generateExpressionNode(ParseTree tree) {
@@ -220,7 +220,7 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
    }
 
    @Override
-   public Void visitInput(InputContext inputContext) {
+   public void visitInput(InputContext inputContext) {
 
       mainMethodVisitor.visitFieldInsn(GETSTATIC, "java/lang/System", "out", "Ljava/io/PrintStream;");
       mainMethodVisitor.visitLdcInsn(inputContext.getInputText().getText());
@@ -232,7 +232,7 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
       mainMethodVisitor.visitMethodInsn(INVOKESPECIAL, "java/util/Scanner", "<init>", "(Ljava/io/InputStream;)V", false);
       mainMethodVisitor.visitMethodInsn(INVOKEVIRTUAL, "java/util/Scanner", "nextLine", "()Ljava/lang/String;", false);
 
-      return null;
+      
    }
 
 //   private void generateEqual() {

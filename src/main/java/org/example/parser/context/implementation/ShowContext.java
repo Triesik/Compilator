@@ -54,7 +54,7 @@ public class ShowContext extends ParserRuleContext {
     }
 
     @Override
-    public Object accept(Visitor visitor) {
-        return visitor.visitShow(this);
+    public void accept(Visitor visitor) {
+        visitor.visitShow(this);
     }
 }

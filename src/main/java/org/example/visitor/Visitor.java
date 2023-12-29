@@ -6,22 +6,22 @@ import org.example.parser.context.implementation.TerminalNode;
 
 public interface Visitor {
 
-    Object visitProgram(ProgramContext context);
-    Object visitStatements(StatementsContext context);
-    Object visitStatement(StatementContext context);
-    Object visitLet(LetContext context);
-    Object visitShow(ShowContext context);
-    Object visitTerminal(TerminalNode context);
-    Object visitExpression(ExpressionContext context);
-    Object visitExpressionNode(ExpressionNode context);
+    void visitProgram(ProgramContext context);
+    void visitStatements(StatementsContext context);
+    void visitStatement(StatementContext context);
+    void visitLet(LetContext context);
+    void visitShow(ShowContext context);
+    void visitTerminal(TerminalNode context);
+    void visitExpression(ExpressionContext context);
+    void visitExpressionNode(ExpressionNode context);
 
-    Object visitIfStatement(IfStatementContext context);
+    void visitIfStatement(IfStatementContext context);
 
-    Object visitInput(InputContext inputContext);
+    void visitInput(InputContext inputContext);
 
-   Object visitFunction(FunctionContext functionContext);
+    void visitFunction(FunctionContext functionContext);
 
-    Object visitReturn(ReturnContext returnContext);
+    void visitReturn(ReturnContext returnContext);
 
-    Object visitFunctionCall(FunctionCallContext functionCallContext);
+    void visitFunctionCall(FunctionCallContext functionCallContext);
 }

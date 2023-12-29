@@ -19,12 +19,12 @@ public class SemanticAnalyzer extends SimplerLangBaseVisitor {
   }
 
   @Override
-  public Void visitStatement(StatementContext context) {
-    return (Void) super.visitStatement(context);
+  public void visitStatement(StatementContext context) {
+     super.visitStatement(context);
   }
 
   @Override
-  public Void visitLet(LetContext context) {
+  public void visitLet(LetContext context) {
 
     String variableName = context.getVariableName().getText();
     String variableValue = context.getVariableValue().getText();
@@ -36,12 +36,10 @@ public class SemanticAnalyzer extends SimplerLangBaseVisitor {
     }
 
     variableMap.put(variableName, variableValue);
-
-    return (Void) super.visitLet(context);
   }
 
   @Override
-  public Void visitShow(ShowContext context) {
+  public void visitShow(ShowContext context) {
 
     TerminalNode variableNameTN = context.getVariableName();
     TerminalNode integerValueTN = context.getIntegerValue();
@@ -59,6 +57,5 @@ public class SemanticAnalyzer extends SimplerLangBaseVisitor {
       }
     }
 
-    return (Void) super.visitShow(context);
   }
 }

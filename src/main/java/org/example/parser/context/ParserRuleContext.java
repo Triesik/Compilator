@@ -77,7 +77,7 @@ public class ParserRuleContext implements ParseTree {
   }
 
   @Override
-  public Object accept(Visitor visitor) {
-    return null;
+  public void accept(Visitor visitor) {
+
   }
 }

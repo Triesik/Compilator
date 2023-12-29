@@ -33,7 +33,7 @@ public class LetContext extends ParserRuleContext {
   }
 
   @Override
-  public Object accept(Visitor visitor) {
-    return visitor.visitLet(this);
+  public void accept(Visitor visitor) {
+    visitor.visitLet(this);
   }
 }

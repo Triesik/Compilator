@@ -44,7 +44,7 @@ public class StatementContext extends ParserRuleContext {
     }
 
     @Override
-    public Object accept(Visitor visitor) {
-        return visitor.visitStatement(this);
+    public void accept(Visitor visitor) {
+        visitor.visitStatement(this);
     }
 }

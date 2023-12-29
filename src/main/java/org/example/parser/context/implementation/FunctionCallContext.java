@@ -19,7 +19,7 @@ public class FunctionCallContext extends ParserRuleContext {
   }
 
   @Override
-  public Object accept(Visitor visitor) {
-    return visitor.visitFunctionCall(this);
+  public void accept(Visitor visitor) {
+    visitor.visitFunctionCall(this);
   }
 }

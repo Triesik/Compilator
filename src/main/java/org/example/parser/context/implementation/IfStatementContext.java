@@ -36,7 +36,7 @@ public class IfStatementContext extends ParserRuleContext {
     }
 
     @Override
-    public Object accept(Visitor visitor) {
-        return visitor.visitIfStatement(this);
+    public void accept(Visitor visitor) {
+        visitor.visitIfStatement(this);
     }
 }

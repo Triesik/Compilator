@@ -16,7 +16,7 @@ public class InputContext extends ParserRuleContext {
     }
 
     @Override
-    public Object accept(Visitor visitor) {
-        return visitor.visitInput(this);
+    public void accept(Visitor visitor) {
+        visitor.visitInput(this);
     }
 }
