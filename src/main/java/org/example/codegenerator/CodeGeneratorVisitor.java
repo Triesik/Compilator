@@ -34,10 +34,6 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
       variableIndex = 1;
    }
 
-   /**
-    * Called when the program node is visited. The main entry point.
-    */
-
    @Override
    public Void visitProgram(ProgramContext context) {
 
