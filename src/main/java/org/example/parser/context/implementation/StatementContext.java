@@ -4,11 +4,6 @@ import lombok.NoArgsConstructor;
 import org.example.visitor.Visitor;
 import org.example.parser.context.ParserRuleContext;
 
-/**
- * `Statement` Syntax ParseRuleContext.
- *
- * <p>Eg:- LET | SHOW // ie either Let or Show statement would be the value of statement.
- */
 public class StatementContext extends ParserRuleContext {
 
     private final LetContext letContext;

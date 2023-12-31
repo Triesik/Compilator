@@ -15,7 +15,6 @@ public class ExpressionContext extends ParserRuleContext {
         this.operator = operator;
         this.rightOperand = rightOperand;
 
-        // Add the operands as children to this node.
         this.addChild(leftOperand);
         this.addChild(rightOperand);
     }

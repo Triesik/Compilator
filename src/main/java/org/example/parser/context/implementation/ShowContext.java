@@ -4,11 +4,6 @@ import org.example.parser.context.ParseTree;
 import org.example.visitor.Visitor;
 import org.example.parser.context.ParserRuleContext;
 
-/**
- * `Show` Syntax ParseRuleContext.
- *
- * <p>Eg:- show INT or show VAR
- */
 public class ShowContext extends ParserRuleContext {
 
     private final TerminalNode integerValue;
@@ -25,7 +20,6 @@ public class ShowContext extends ParserRuleContext {
         this.stringValue = stringValue;
         this.expressionContext = expressionContext;
 
-        // Conditionally add child node
         if (expressionContext != null) {
             this.addChild(expressionContext);
         } else if (integerValue != null) {

@@ -33,10 +33,6 @@ public class Parser {
     }
 
     public StatementContext parseStatement() {
-        if (scanner.getCurrentToken() == null) {
-            nextToken();
-        }
-
         Token token = scanner.getCurrentToken();
 
         if ((token.getType() == TokenType.LET || token.getType() == TokenType.TEXT)) {
@@ -246,7 +242,7 @@ public class Parser {
             nextToken();
             String parameterName = scanner.getCurrentToken().getValue();
             functionParameters.add(new FunctionParameter(parameterType, parameterName));
-            scanner.nextToken();
+            nextToken();
         }
         nextToken();
         return functionParameters;

@@ -22,7 +22,7 @@ public class Scanner {
         currentIndex = 0;
     }
 
-    public boolean nextToken() {
+    public void nextToken() {
 
         while (currentIndex < codeLength) {
 
@@ -48,16 +48,15 @@ public class Scanner {
             } else {
                 throw new RuntimeException("Unexpected character at index " + currentIndex + ":  + currentChar");
             }
-            return true;
         }
-        return false;
     }
 
     private Token readLetter() {
         StringBuilder textValue = new StringBuilder();
         Token startingToken = previousToken;
 
-        while ((currentIndex < codeLength && (Character.isLetter(sourceCode.get(currentIndex)) || (startingToken != null && startingToken.getValue().equals("'")) && sourceCode.get(currentIndex) != '\"'))) {
+        while ((currentIndex < codeLength && (Character.isLetter(sourceCode.get(currentIndex)) ||
+               (startingToken != null && startingToken.getValue().equals("'")) && sourceCode.get(currentIndex) != '\"'))) {
             textValue.append(sourceCode.get(currentIndex));
             currentIndex++;
         }
@@ -75,10 +74,10 @@ public class Scanner {
     }
 
     private TokenType determineTextType(String textValue) {
-        return (Arrays.stream(TokenType.values())
+        return Arrays.stream(TokenType.values())
                .filter(type -> type.name().equalsIgnoreCase(textValue))
                .findFirst()
-               .orElse(TokenType.TEXT));
+               .orElse(TokenType.TEXT);
     }
 
     private Token determineMathOperator() {

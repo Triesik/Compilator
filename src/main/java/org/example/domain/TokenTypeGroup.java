@@ -1,7 +1,7 @@
 package org.example.domain;
 
 public enum TokenTypeGroup {
-   STATEMENT,
+   KEYWORD,
    OPERATOR,
    VALUE,
    DELIMITER

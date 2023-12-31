@@ -2,18 +2,18 @@ package org.example.domain;
 
 
 public enum TokenType {
-    SHOW(TokenTypeGroup.STATEMENT),
-    FUNC(TokenTypeGroup.STATEMENT),
-    NUMB(TokenTypeGroup.STATEMENT),
-    BOOLEAN(TokenTypeGroup.STATEMENT),
-    STRING(TokenTypeGroup.STATEMENT),
+    SHOW(TokenTypeGroup.KEYWORD),
+    FUNC(TokenTypeGroup.KEYWORD),
+    NUMB(TokenTypeGroup.KEYWORD),
+    BOOLEAN(TokenTypeGroup.KEYWORD),
+    STRING(TokenTypeGroup.KEYWORD),
     COMA(TokenTypeGroup.DELIMITER),
     OPERATOR(TokenTypeGroup.OPERATOR),
-    INPUT(TokenTypeGroup.STATEMENT),
-    WHILE(TokenTypeGroup.STATEMENT),
-    END_WHILE(TokenTypeGroup.STATEMENT),
-    IF(TokenTypeGroup.STATEMENT),
-    END_IF(TokenTypeGroup.STATEMENT),
+    INPUT(TokenTypeGroup.KEYWORD),
+    WHILE(TokenTypeGroup.KEYWORD),
+    END_WHILE(TokenTypeGroup.KEYWORD),
+    IF(TokenTypeGroup.KEYWORD),
+    END_IF(TokenTypeGroup.KEYWORD),
     OPEN_BRACE(TokenTypeGroup.DELIMITER),
     CLOSE_BRACE(TokenTypeGroup.DELIMITER),
     RIGHT_PARENTHESIS(TokenTypeGroup.DELIMITER),
@@ -21,7 +21,7 @@ public enum TokenType {
     NUMBER(TokenTypeGroup.VALUE),
     TEXT(TokenTypeGroup.VALUE),
     QUOTE(TokenTypeGroup.DELIMITER),
-    LET(TokenTypeGroup.STATEMENT),
+    LET(TokenTypeGroup.KEYWORD),
     ADD(TokenTypeGroup.OPERATOR),
     SUBTRACT(TokenTypeGroup.OPERATOR),
     MULTIPLY(TokenTypeGroup.OPERATOR),
@@ -29,8 +29,8 @@ public enum TokenType {
     EQUALS(TokenTypeGroup.OPERATOR),
     TRUE(TokenTypeGroup.VALUE),
     FALSE(TokenTypeGroup.VALUE),
-    ELSE(TokenTypeGroup.STATEMENT),
-    RETURN(TokenTypeGroup.STATEMENT);
+    ELSE(TokenTypeGroup.KEYWORD),
+    RETURN(TokenTypeGroup.KEYWORD);
 
     private final TokenTypeGroup group;
 

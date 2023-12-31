@@ -96,16 +96,12 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
 
       super.visitFunctionCall(context);
       mainMethodVisitor.visitMethodInsn(INVOKESTATIC, "CgSample", context.getFunctionName(), functionDescriptorMap.get(context.getFunctionName()), false);
-
-      
    }
 
    @Override
    public void visitReturn(ReturnContext context) {
       super.visitReturn(context);
       mainMethodVisitor.visitInsn(IRETURN);
-
-      
    }
 
    @Override
@@ -234,11 +230,6 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
 
       
    }
-
-//   private void generateEqual() {
-//      Label trueLabel = new Label();
-//      Label endLabel = new Label();
-//   }
 
    private void writeToFile(byte[] code) {
       try (FileOutputStream fos = new FileOutputStream("output/CgSample.class")) {
