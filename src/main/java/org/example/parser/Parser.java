@@ -39,14 +39,14 @@ public class Parser {
             if(scanner.getLookAheadToken().getType() == TokenType.LEFT_PARENTHESIS) {
                 return parseFunctionCallContext();
             } else {
-                return new StatementContext(parseLet(), null, null, null);
+                return new StatementContext(parseLet());
             }
         } else if (token.getType() == TokenType.SHOW) {
-            return new StatementContext(null, parseShow(), null, null);
+            return new StatementContext(parseShow());
         } else if (token.getType() == TokenType.IF) {
-            return new StatementContext(null, null, parseIfStatement(), null);
+            return new StatementContext(parseIfStatement());
         } else if (token.getType() == TokenType.FUNC) {
-            return new StatementContext(null, null, null, parseFunctionContext());
+            return new StatementContext(parseFunctionContext());
         } else if (token.getType() == TokenType.RETURN) {
             return parseReturnContext();
         } else {
@@ -55,7 +55,7 @@ public class Parser {
     }
 
     private StatementContext parseFunctionCallContext() {
-        StatementContext statementContext = new StatementContext(null, null, null, null);
+        StatementContext statementContext = new StatementContext();
         FunctionCallContext functionCallContext = new FunctionCallContext(scanner.getCurrentToken().getValue());
         nextToken();
         while(scanner.getCurrentToken().getType() != TokenType.RIGHT_PARENTHESIS) {
@@ -68,7 +68,7 @@ public class Parser {
     }
 
     private StatementContext parseReturnContext() {
-        StatementContext statementContext = new StatementContext(null, null, null, null);
+        StatementContext statementContext = new StatementContext();
         nextToken();
         ReturnContext returnContext = new ReturnContext(parseExpressionContext());
         statementContext.addChild(returnContext);

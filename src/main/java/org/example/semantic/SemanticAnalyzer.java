@@ -8,15 +8,18 @@ import org.example.parser.context.implementation.*;
 import org.example.visitor.SimplerLangBaseVisitor;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SemanticAnalyzer extends SimplerLangBaseVisitor {
 
   private final Map<String, ParseTree> variableMap;
+  private final Map<String, FunctionData> functionMap;
 
   public SemanticAnalyzer() {
     super();
     this.variableMap = new HashMap<>();
+    this.functionMap = new HashMap<>();
   }
 
 
@@ -51,32 +54,22 @@ public class SemanticAnalyzer extends SimplerLangBaseVisitor {
     }
   }
 
-  private void analyzeTerminalNode(TerminalNode terminalNode) {
-    Token symbol = terminalNode.getSymbol();
+  @Override
+  public void visitFunction(FunctionContext functionContext) {
+    String functionName = functionContext.getFunctionName();
+    String returnType = functionContext.getReturnType();
+    List<FunctionParameter> parameters = functionContext.getParameters();
 
-    // Example: Perform type checking for variables or literals
-    if (symbol.getType().getGroup() != TokenTypeGroup.VALUE) {
-      // Handle error: Invalid use of a non-value token
-      System.err.println("Error: Invalid use of a non-value token");
+    functionMap.put(new FunctionData())
+
+    if(functionMap.get(functionName) != null) {
+      System.err.println("Error: Variable '" + functionName + "' has already been declared.");
     }
-  }
 
-  private void analyzeFunctionCall(FunctionCallContext functionCallContext) {
-    // Example: Perform semantic analysis for function calls
-    // You may need to check if the function exists, match parameter types, etc.
-  }
-
-  // Other helper methods for type checking, etc.
-
-  private boolean isValidBinaryOperation(ParseTree leftOperand, TokenType operator, ParseTree rightOperand) {
-    // Example: Check if the binary operation is valid based on operand types and operator
-    // You may need to implement more sophisticated type checking logic
-    return true;
   }
 
   @Override
   public void visitShow(ShowContext context) {
-
 
   }
 }

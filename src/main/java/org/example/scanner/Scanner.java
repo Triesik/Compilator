@@ -31,7 +31,6 @@ public class Scanner {
 
             if (Character.isWhitespace(currentChar)) {
                 skipWhiteSpace();
-                continue;
             } else if (Pattern.matches("[-+=/*(){}]", String.valueOf(currentChar))) {
                 currentToken = determineMathOperator();
                 currentIndex++;
