@@ -23,8 +23,8 @@ public class CkCompilerTest {
 //        String sourceCode = "let a = 12*(15+11) let b = 30 }";
 //    String sourceCode = "let a = 10 if (a + a == 10) {\n" +
 //          "a = 3 } else { a = 5 show 12 == e} }";
-    String sourceCode = "a = 5 let a = 5 let b = true func numb g(numb a, numb b, boolean c) { if(a+b == 10-b) {return a + 3} else {show b return g(a, b, c)} return b} let c = g(a, a, b)}";
-//        String sourceCode = "let b = 15}";
+//    String sourceCode = "a = 5 let a = 5 let b = true func numb g(numb a, numb b, boolean c) { if(a+b == 10-b) {return a + 3} else {show b return g(a, b, c)} return b} let c = g(a, a, b)}";
+        String sourceCode = "let b = 15}";
     List<Character> codeArray = sourceCode.chars()
            .mapToObj(c -> (char) c).toList();
 
@@ -38,9 +38,9 @@ public class CkCompilerTest {
     Assertions.assertNotNull(tree);
 
     // 3. Semantic Analyzer Visitor
-//    tree.accept(new SemanticAnalyzer());
+    tree.accept(new SemanticAnalyzer());
 
     // 4.2 Compiler Visitor
-    tree.accept(new CodeGeneratorVisitor());
+//    tree.accept(new CodeGeneratorVisitor());
   }
 }

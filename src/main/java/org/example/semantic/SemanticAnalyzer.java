@@ -1,61 +1,73 @@
 package org.example.semantic;
 
-import org.example.parser.context.implementation.LetContext;
-import org.example.parser.context.implementation.ShowContext;
-import org.example.parser.context.implementation.StatementContext;
-import org.example.parser.context.implementation.TerminalNode;
+import org.example.domain.Token;
+import org.example.domain.TokenType;
+import org.example.domain.TokenTypeGroup;
+import org.example.parser.context.ParseTree;
+import org.example.parser.context.implementation.*;
 import org.example.visitor.SimplerLangBaseVisitor;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SemanticAnalyzer extends SimplerLangBaseVisitor {
 
-  private final Map<String, String> variableMap;
+  private final Map<String, ParseTree> variableMap;
 
   public SemanticAnalyzer() {
     super();
     this.variableMap = new HashMap<>();
   }
 
+
   @Override
-  public void visitStatement(StatementContext context) {
-     super.visitStatement(context);
+  public void visitLet(LetContext letContext) {
+    TerminalNode variableNameNode = letContext.getVariableName();
+
+    String variableName = variableNameNode.getText();
+
+    if (variableMap.get(variableName) != null) {
+      System.err.println("Error: Variable '" + variableName + "' has already been declared.");
+    }
+
+    super.visitLet(letContext);
+    variableMap.put(variableNameNode.getText(), letContext.getVariableValue());
+  }
+
+//  @Override
+//  public void visitExpression(ExpressionContext expressionContext) {
+//    if(expressionContext.getOperator() != null && expressionContext.getOperator().getGroup() != TokenTypeGroup.OPERATOR) {
+//      throw new RuntimeException("Operator is not valid:" + expressionContext.getOperator());
+//    }
+//    super.visitExpression(expressionContext);
+//  }
+
+  @Override
+  public void visitExpressionNode(ExpressionNode expressionNode) {
+    Token token = expressionNode.getSymbol();
+    if(expressionNode.getSymbol().getType() == TokenType.TEXT) {
+      if(variableMap.get(token.getValue()) == null) {
+        throw new RuntimeException("Variable referenced before declaration: " + token.getValue());
+      }
+    }
   }
 
   @Override
-  public void visitLet(LetContext context) {
+  public void visitFunctionCall(FunctionCallContext functionCallContext) {
+  }
 
-    String variableName = context.getVariableName().getText();
-    String variableValue = context.getVariableValue().getText();
+  @Override
+  public void visitFunction(FunctionContext functionContext) {
+    String functionName = functionContext.getFunctionName();
+    String returnType = functionContext.getReturnType();
+    List<FunctionParameter> parameters = functionContext.getParameters();
 
-    if (variableName == null || variableName.isEmpty()) {
-      throw new RuntimeException("Variable name cannot be empty.");
-    } else if (variableValue == null || variableValue.isEmpty()) {
-      throw new RuntimeException("Variable value cannot be empty.");
-    }
 
-    variableMap.put(variableName, variableValue);
   }
 
   @Override
   public void visitShow(ShowContext context) {
-
-    TerminalNode variableNameTN = context.getVariableName();
-    TerminalNode integerValueTN = context.getIntegerValue();
-    TerminalNode stringValueTN = context.getStringValue();
-
-    boolean isVarPresent = variableNameTN != null && !variableNameTN.getText().isEmpty();
-    boolean isIntPresent = integerValueTN != null && !integerValueTN.getText().isEmpty();
-    boolean isStringPresent = stringValueTN != null && !stringValueTN.getText().isEmpty();
-
-    if (integerValueTN != null) {
-      try {
-        Integer.parseInt(integerValueTN.getText());
-      } catch (NumberFormatException | NullPointerException ex) {
-        throw new RuntimeException("SHOW argument is not a valid integer.", ex);
-      }
-    }
 
   }
 }
