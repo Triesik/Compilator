@@ -4,7 +4,7 @@ import org.example.domain.Token;
 import org.example.domain.TokenType;
 import org.example.parser.context.ParseTree;
 import org.example.parser.context.implementation.*;
-import org.example.visitor.SimplerLangBaseVisitor;
+import org.example.visitor.BaseVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
@@ -16,7 +16,7 @@ import java.util.Map;
 
 import static org.objectweb.asm.Opcodes.*;
 
-public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
+public class CodeGeneratorVisitor extends BaseVisitor {
 
    private final ClassWriter classWriter;
 
@@ -143,8 +143,6 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
       else {
          mainMethodVisitor.visitVarInsn(ASTORE, variableIndexMap.get(variableName).getIndex());
       }
-
-      
    }
 
    @Override
@@ -153,21 +151,15 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
 
       super.visitShow(context);
 
-      if (context.getVariableName() != null) {
-         int index = variableIndexMap.get(context.getVariableName().getText()).getIndex();
-         mainMethodVisitor.visitVarInsn(ALOAD, index);
-         mainMethodVisitor.visitMethodInsn(
-               INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/Object;)V", false);
-      } else if (context.getStringValue() != null) {
-         String text = context.getStringValue().getText();
-         mainMethodVisitor.visitLdcInsn(text);
+       if (context.getType() == TokenType.STRING) {
+         mainMethodVisitor.visitLdcInsn(context.getChild(0).getText());
          mainMethodVisitor.visitMethodInsn(
                INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Ljava/lang/String;)V", false);
-      } else if (context.getExpressionContext() != null) {
-         if (variableIndexMap.get(context.getExpressionContext().getText()) != null && isBooleanValue(context.getExpressionContext())) {
+      } else if (context.getType() == TokenType.NUMB) {
+         if (variableIndexMap.get(context.getChild(0).getText()) != null && isBooleanValue(context.getChild(0))) {
             mainMethodVisitor.visitMethodInsn(
                   INVOKEVIRTUAL, "java/io/PrintStream", "println", "(Z)V", false);
-         } else if (context.getExpressionContext().getText().matches("-?\\d+(\\.\\d+)?")) {
+         } else if (context.getChild(0).getText().matches("-?\\d+(\\.\\d+)?")) {
             mainMethodVisitor.visitMethodInsn(
                   INVOKEVIRTUAL, "java/io/PrintStream", "println", "(I)V", false);
          } else {
@@ -192,7 +184,6 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
             case SUBTRACT -> mainMethodVisitor.visitInsn(ISUB);
             case MULTIPLY -> mainMethodVisitor.visitInsn(IMUL);
             case DIVIDE -> mainMethodVisitor.visitInsn(IDIV);
-            //case EQUALS -> generateEqual();
          }
       }
       
@@ -234,11 +225,6 @@ public class CodeGeneratorVisitor extends SimplerLangBaseVisitor {
 
       
    }
-
-//   private void generateEqual() {
-//      Label trueLabel = new Label();
-//      Label endLabel = new Label();
-//   }
 
    private void writeToFile(byte[] code) {
       try (FileOutputStream fos = new FileOutputStream("output/CgSample.class")) {

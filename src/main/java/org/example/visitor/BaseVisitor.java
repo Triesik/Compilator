@@ -5,7 +5,7 @@ import org.example.parser.context.StatementsContext;
 import org.example.parser.context.implementation.*;
 import org.example.parser.context.implementation.TerminalNode;
 
-public class SimplerLangBaseVisitor implements Visitor {
+public class BaseVisitor implements Visitor {
 
   @Override
   public void visitProgram(ProgramContext context) {

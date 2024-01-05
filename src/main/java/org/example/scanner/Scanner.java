@@ -14,7 +14,6 @@ public class Scanner {
     private int currentIndex;
 
     private Token currentToken;
-    private Token previousToken;
 
     public Scanner(List<Character> sourceCode) {
         this.sourceCode = sourceCode;
@@ -26,7 +25,6 @@ public class Scanner {
 
         while (currentIndex < codeLength) {
 
-            previousToken = currentToken;
             Character currentChar = sourceCode.get(currentIndex);
 
             if (Character.isWhitespace(currentChar)) {
@@ -55,9 +53,8 @@ public class Scanner {
 
     private Token readLetter() {
         StringBuilder textValue = new StringBuilder();
-        Token startingToken = previousToken;
 
-        while ((currentIndex < codeLength && (Character.isLetter(sourceCode.get(currentIndex)) || (startingToken != null && startingToken.getValue().equals("'")) && sourceCode.get(currentIndex) != '\"'))) {
+        while ((currentIndex < codeLength && (Character.isLetter(sourceCode.get(currentIndex))))) {
             textValue.append(sourceCode.get(currentIndex));
             currentIndex++;
         }

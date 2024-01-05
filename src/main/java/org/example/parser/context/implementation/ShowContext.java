@@ -1,56 +1,27 @@
 package org.example.parser.context.implementation;
 
+import lombok.NoArgsConstructor;
+import org.example.domain.TokenType;
 import org.example.parser.context.ParseTree;
 import org.example.visitor.Visitor;
 import org.example.parser.context.ParserRuleContext;
 
-/**
- * `Show` Syntax ParseRuleContext.
- *
- * <p>Eg:- show INT or show VAR
- */
+@NoArgsConstructor
 public class ShowContext extends ParserRuleContext {
 
-    private final TerminalNode integerValue;
+    private TokenType type;
 
-    private final TerminalNode variableName;
-
-    private final TerminalNode stringValue;
-
-    private final ParseTree expressionContext;
-
-    public ShowContext(TerminalNode integerValue, TerminalNode variableName, TerminalNode stringValue, ParseTree expressionContext) {
-        this.integerValue = integerValue;
-        this.variableName = variableName;
-        this.stringValue = stringValue;
-        this.expressionContext = expressionContext;
-
-        // Conditionally add child node
-        if (expressionContext != null) {
-            this.addChild(expressionContext);
-        } else if (integerValue != null) {
-            this.addChild(integerValue);
-        } else if (stringValue != null) {
-            this.addChild(stringValue);
-        } else {
-            this.addChild(variableName);
-        }
+    public ShowContext(ParseTree child, TokenType type) {
+        addChild(child);
+        this.type = type;
     }
 
-    public TerminalNode getIntegerValue() {
-        return integerValue;
+    public TokenType getType() {
+        return type;
     }
 
-    public TerminalNode getVariableName() {
-        return variableName;
-    }
-
-    public ParseTree getExpressionContext() {
-        return expressionContext;
-    }
-
-    public TerminalNode getStringValue() {
-        return stringValue;
+    public void setType(TokenType type) {
+        this.type = type;
     }
 
     @Override

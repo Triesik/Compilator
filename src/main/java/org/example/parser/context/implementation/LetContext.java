@@ -4,11 +4,6 @@ import org.example.parser.context.ParseTree;
 import org.example.visitor.Visitor;
 import org.example.parser.context.ParserRuleContext;
 
-/**
- * `Let` Syntax ParseRuleContext.
- *
- * <p>Eg:- a = 10 ( VAR = INT)
- */
 public class LetContext extends ParserRuleContext {
 
   private final TerminalNode variableName;
@@ -19,7 +14,6 @@ public class LetContext extends ParserRuleContext {
     this.variableName = variableName;
     this.variableValue = variableValue;
 
-    // Add the arguments as  children to this node.
     this.addChild(variableName);
     this.addChild(variableValue);
   }
