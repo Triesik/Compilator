@@ -24,7 +24,7 @@ public class CkCompilerTest {
 //    String sourceCode = "let a = 10 if (a + a == 10) {\n" +
 //          "a = 3 } else { a = 5 show 12 == e} }";
     String sourceCode = "let a = 5 let b = true func numb g(numb a, numb b, boolean c) { if(a+b == 10-b) {return a + 3} else {show b return g(a, b, c)} return b} let c = g(a, a, b)}";
-//        String sourceCode = "let b = 15}";
+//        String sourceCode = "let b = 15 + 13 - 12}";
     List<Character> codeArray = sourceCode.chars()
            .mapToObj(c -> (char) c).toList();
 
